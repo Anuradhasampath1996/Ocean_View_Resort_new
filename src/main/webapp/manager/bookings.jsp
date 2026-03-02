@@ -25,8 +25,10 @@
                         <!-- Navbar -->
                         <nav class="navbar navbar-expand-lg navbar-light sticky-top">
                             <div class="container-fluid navbar-container">
-                                <a href="${pageContext.request.contextPath}/index.jsp" class="navbar-brand">
-                                    <i class="bi bi-water"></i> Ocean View Resort
+                                <a href="${pageContext.request.contextPath}/index.jsp"
+                                    class="navbar-brand logo-container">
+                                    <img src="${pageContext.request.contextPath}/images/logo.png"
+                                        alt="Ocean View Resort" class="logo-image">
                                 </a>
                                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
@@ -72,13 +74,10 @@
                         <div style="display: flex;">
                             <!-- Sidebar -->
                             <aside class="dashboard-sidebar" style="width: 250px;">
-                                <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb;">
-                                    <a href="${pageContext.request.contextPath}/index.jsp"
-                                        style="text-decoration: none; color: inherit;">
-                                        <h3
-                                            style="margin: 0; font-size: 1.25rem; font-weight: 600; color: hsl(var(--ocean-blue));">
-                                            <i class="bi bi-water"></i> Ocean View Resort
-                                        </h3>
+                                <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; text-align: center;">
+                                    <a href="${pageContext.request.contextPath}/index.jsp" class="logo-container">
+                                        <img src="${pageContext.request.contextPath}/images/logo.png"
+                                            alt="Ocean View Resort" class="logo-image sidebar">
                                     </a>
                                 </div>
                                 <ul class="sidebar-nav">
@@ -123,6 +122,7 @@
                                                         <th>Guests</th>
                                                         <th>Amount</th>
                                                         <th>Status</th>
+                                                        <th>Actions</th>
                                                     </tr>
                                                 </thead>
                                                 <tbody>
@@ -164,6 +164,39 @@
                                                                         booking.getStatus().substring(1) %>
                                                                 </span>
                                                             </td>
+                                                            <td>
+                                                                <button class="btn btn-secondary"
+                                                                    style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                    onclick="editBookingStatus(<%= booking.getId() %>, '<%= booking.getStatus() %>')">
+                                                                    Edit
+                                                                </button>
+                                                                <% if ("pending".equals(booking.getStatus())) { %>
+                                                                    <button class="btn btn-primary"
+                                                                        style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                        onclick="updateStatus(<%= booking.getId() %>, 'confirmed')">
+                                                                        Confirm
+                                                                    </button>
+                                                                <% } %>
+                                                                <% if ("confirmed".equals(booking.getStatus())) { %>
+                                                                    <button class="btn btn-secondary"
+                                                                        style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                        onclick="updateStatus(<%= booking.getId() %>, 'completed')">
+                                                                        Complete
+                                                                    </button>
+                                                                <% } %>
+                                                                <% if (!"cancelled".equals(booking.getStatus()) && !"completed".equals(booking.getStatus())) { %>
+                                                                    <button class="btn btn-warning"
+                                                                        style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                        onclick="updateStatus(<%= booking.getId() %>, 'cancelled')">
+                                                                        Cancel
+                                                                    </button>
+                                                                <% } %>
+                                                                <button class="btn btn-danger"
+                                                                    style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                    onclick="deleteBooking(<%= booking.getId() %>)">
+                                                                    Delete
+                                                                </button>
+                                                            </td>
                                                         </tr>
                                                         <% } %>
                                                 </tbody>
@@ -176,6 +209,106 @@
 
                         <script
                             src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                        <script>
+                            function postBookingAction(action, params = {}) {
+                                const payload = new URLSearchParams();
+                                payload.set('action', action);
+
+                                Object.keys(params).forEach((key) => {
+                                    if (params[key] !== undefined && params[key] !== null) {
+                                        payload.set(key, String(params[key]));
+                                    }
+                                });
+
+                                const query = payload.toString();
+                                return fetch('${pageContext.request.contextPath}/bookings?' + query, {
+                                    method: 'POST',
+                                    headers: { 'Content-Type': 'application/x-www-form-urlencoded; charset=UTF-8' },
+                                    body: query
+                                }).then(async (response) => {
+                                    let payload = null;
+                                    try {
+                                        payload = await response.json();
+                                    } catch {
+                                        payload = { success: false, message: 'Invalid server response' };
+                                    }
+
+                                    if (!response.ok || !payload.success) {
+                                        throw new Error(payload.message || 'Request failed');
+                                    }
+                                    return payload;
+                                });
+                            }
+
+                            function updateStatus(bookingId, status) {
+                                const action = status === 'confirmed' ? 'confirm' :
+                                    status === 'cancelled' ? 'cancel' : 'complete';
+                                const message = `Are you sure you want to ${action} this booking?`;
+
+                                if (confirm(message)) {
+                                    postBookingAction('updateStatus', {
+                                        id: bookingId,
+                                        bookingId: bookingId,
+                                        status: status,
+                                        newStatus: status
+                                    })
+                                        .then(data => {
+                                            if (data.success) {
+                                                location.reload();
+                                            } else {
+                                                alert('Failed to update booking status');
+                                            }
+                                        })
+                                        .catch((error) => alert(error.message || 'Failed to update booking status'));
+                                }
+                            }
+
+                            function deleteBooking(bookingId) {
+                                if (!confirm('Are you sure you want to delete this booking?')) {
+                                    return;
+                                }
+
+                                postBookingAction('delete', {
+                                    id: bookingId,
+                                    bookingId: bookingId
+                                })
+                                    .then(data => {
+                                        if (data.success) {
+                                            location.reload();
+                                        } else {
+                                            alert('Failed to delete booking');
+                                        }
+                                    })
+                                    .catch((error) => alert(error.message || 'Failed to delete booking'));
+                            }
+
+                            function editBookingStatus(bookingId, currentStatus) {
+                                const nextStatus = prompt(
+                                    'Set booking status (pending, confirmed, completed, cancelled):',
+                                    currentStatus
+                                );
+
+                                if (!nextStatus) {
+                                    return;
+                                }
+
+                                const status = nextStatus.trim().toLowerCase();
+                                const allowedStatuses = ['pending', 'confirmed', 'completed', 'cancelled'];
+                                if (!allowedStatuses.includes(status)) {
+                                    alert('Invalid status. Use: pending, confirmed, completed, cancelled');
+                                    return;
+                                }
+
+                                postBookingAction('updateStatus', {
+                                    id: bookingId,
+                                    bookingId: bookingId,
+                                    status: status,
+                                    newStatus: status
+                                })
+                                    .then(() => location.reload())
+                                    .catch((error) => alert(error.message || 'Failed to edit booking status'));
+                            }
+                        </script>
                     </body>
 
                     </html>

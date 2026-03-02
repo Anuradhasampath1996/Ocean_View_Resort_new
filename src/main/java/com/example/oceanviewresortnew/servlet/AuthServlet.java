@@ -25,7 +25,8 @@ public class AuthServlet extends HttpServlet {
         if ("login".equals(action)) {
             handleLogin(request, response);
         } else if ("register".equals(action)) {
-            handleRegister(request, response);
+            request.setAttribute("error", "Self-registration is disabled. Please contact your administrator.");
+            request.getRequestDispatcher("/login.jsp").forward(request, response);
         } else if ("logout".equals(action)) {
             handleLogout(request, response);
         }
@@ -59,31 +60,6 @@ public class AuthServlet extends HttpServlet {
         } else {
             request.setAttribute("error", "Invalid username or password");
             request.getRequestDispatcher("/login.jsp").forward(request, response);
-        }
-    }
-
-    private void handleRegister(HttpServletRequest request, HttpServletResponse response)
-            throws ServletException, IOException {
-        String username = request.getParameter("username");
-        String password = request.getParameter("password");
-        String email = request.getParameter("email");
-        String fullName = request.getParameter("fullName");
-        String phone = request.getParameter("phone");
-
-        User user = new User();
-        user.setUsername(username);
-        user.setPassword(password);
-        user.setEmail(email);
-        user.setFullName(fullName);
-        user.setPhone(phone);
-        user.setRole("customer");
-
-        if (userDAO.register(user)) {
-            request.setAttribute("success", "Registration successful! Please login.");
-            request.getRequestDispatcher("/login.jsp").forward(request, response);
-        } else {
-            request.setAttribute("error", "Registration failed. Username or email may already exist.");
-            request.getRequestDispatcher("/register.jsp").forward(request, response);
         }
     }
 

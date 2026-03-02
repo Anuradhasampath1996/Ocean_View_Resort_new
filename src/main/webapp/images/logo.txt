@@ -1,0 +1,2 @@
+Please save the Ocean View Resort logo image as 'logo.png' in this directory.
+The logo should be the colorful beach scene with palm trees, sunset, and "Ocean View Resort Galle" text.

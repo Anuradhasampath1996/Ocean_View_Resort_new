@@ -15,12 +15,14 @@
         <!-- Navbar -->
         <nav class="navbar">
             <div class="navbar-container">
-                <a href="${pageContext.request.contextPath}/index.jsp" class="navbar-brand">
-                    <i class="bi bi-water"></i> Ocean View Resort
+                <a href="${pageContext.request.contextPath}/index.jsp" class="navbar-brand logo-container">
+                    <img src="${pageContext.request.contextPath}/images/logo.png" alt="Ocean View Resort"
+                        class="logo-image">
                 </a>
                 <ul class="navbar-nav">
                     <li><a href="${pageContext.request.contextPath}/index.jsp" class="nav-link">Home</a></li>
-                    <li><a href="${pageContext.request.contextPath}/register.jsp" class="btn btn-primary">Register</a>
+                    <li><a href="${pageContext.request.contextPath}/index.jsp#contact" class="btn btn-primary">Contact
+                            Admin</a>
                     </li>
                 </ul>
             </div>
@@ -67,9 +69,8 @@
                                         </form>
 
                                         <div class="text-center mt-3">
-                                            <p class="text-muted">Don't have an account? <a
-                                                    href="${pageContext.request.contextPath}/register.jsp"
-                                                    style="color: hsl(var(--ocean-blue));">Register here</a></p>
+                                            <p class="text-muted">Need an account? Please contact your system
+                                                administrator.</p>
                                         </div>
 
                                         <div class="mt-4 p-3"

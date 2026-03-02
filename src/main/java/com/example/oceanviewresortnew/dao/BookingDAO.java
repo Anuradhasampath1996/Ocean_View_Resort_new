@@ -110,6 +110,19 @@ public class BookingDAO {
         }
     }
 
+    public boolean deleteBooking(int bookingId) {
+        String query = "DELETE FROM bookings WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setInt(1, bookingId);
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
     public boolean isRoomAvailable(int roomId, Date checkIn, Date checkOut) {
         String query = "SELECT COUNT(*) FROM bookings " +
                 "WHERE room_id = ? " +

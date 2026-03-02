@@ -1,0 +1,188 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>How to Add Your Logo</title>
+    <style>
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 20px;
+            line-height: 1.6;
+            background: linear-gradient(135deg, #0B99D6 0%, #3DB3E5 50%, #87CEEB 100%);
+            color: #1A1A1A;
+        }
+
+        .container {
+            background: white;
+            padding: 40px;
+            border-radius: 12px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.15);
+        }
+
+        h1 {
+            color: #0B99D6;
+            border-bottom: 3px solid #FFB347;
+            padding-bottom: 10px;
+        }
+
+        h2 {
+            color: #E74C3C;
+            margin-top: 30px;
+        }
+
+        .step {
+            background: #F8F9FA;
+            padding: 20px;
+            margin: 20px 0;
+            border-left: 4px solid #0B99D6;
+            border-radius: 4px;
+        }
+
+        .step h3 {
+            color: #0B99D6;
+            margin-top: 0;
+        }
+
+        code {
+            background: #FFE5CC;
+            padding: 2px 8px;
+            border-radius: 3px;
+            font-family: 'Courier New', monospace;
+            color: #E74C3C;
+        }
+
+        .highlight {
+            background: linear-gradient(135deg, #FFB347 0%, #FFC857 100%);
+            padding: 15px;
+            border-radius: 8px;
+            margin: 20px 0;
+            font-weight: 600;
+        }
+
+        .color-palette {
+            display: flex;
+            gap: 10px;
+            margin: 20px 0;
+            flex-wrap: wrap;
+        }
+
+        .color-box {
+            padding: 20px;
+            border-radius: 8px;
+            text-align: center;
+            color: white;
+            font-weight: 600;
+            min-width: 120px;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+
+<body>
+    <div class="container">
+        <h1>🏖️ Ocean View Resort - Logo Integration</h1>
+
+        <p>Thank you for updating your application with the beautiful Ocean View Resort logo! All the code changes have
+            been completed. Now you just need to add the logo image file.</p>
+
+        <div class="highlight">
+            ⚠️ IMPORTANT: Save your logo image as <code>logo.png</code> in the images folder!
+        </div>
+
+        <h2>📁 Step-by-Step Instructions</h2>
+
+        <div class="step">
+            <h3>Step 1: Locate the Logo File</h3>
+            <p>Find your Ocean View Resort logo image (the one with palm trees, sunset, and beach scene)</p>
+        </div>
+
+        <div class="step">
+            <h3>Step 2: Save the Logo</h3>
+            <p>Save or copy your logo image to this exact location:</p>
+            <code>src/main/webapp/images/logo.png</code>
+            <p style="margin-top: 10px;">The file MUST be named <code>logo.png</code> (lowercase, with .png extension)
+            </p>
+        </div>
+
+        <div class="step">
+            <h3>Step 3: Verify the Logo</h3>
+            <p>After saving, rebuild your project:</p>
+            <code>mvn clean package</code>
+            <p style="margin-top: 10px;">Then deploy to Tomcat and check any page - your logo should appear!</p>
+        </div>
+
+        <h2>🎨 New Color Theme Applied</h2>
+
+        <p>The entire application now uses colors from your logo:</p>
+
+        <div class="color-palette">
+            <div class="color-box" style="background: #0B99D6;">
+                Ocean Blue<br>#0B99D6
+            </div>
+            <div class="color-box" style="background: #FFB347;">
+                Sunset Orange<br>#FFB347
+            </div>
+            <div class="color-box" style="background: #E74C3C;">
+                Resort Red<br>#E74C3C
+            </div>
+            <div class="color-box" style="background: #4CAF50;">
+                Palm Green<br>#4CAF50
+            </div>
+            <div class="color-box" style="background: #87CEEB;">
+                Sky Blue<br>#87CEEB
+            </div>
+        </div>
+
+        <h2>✅ What Was Updated</h2>
+
+        <ul>
+            <li>✓ All 19 pages updated with logo image references</li>
+            <li>✓ CSS color scheme matches logo colors exactly</li>
+            <li>✓ Gradient buttons with ocean blue and sunset orange</li>
+            <li>✓ Color-coded dashboard cards</li>
+            <li>✓ Logo appears in:
+                <ul>
+                    <li>All navbars (50px height)</li>
+                    <li>All sidebars (80px height)</li>
+                    <li>Index page, login, and registration pages</li>
+                </ul>
+            </li>
+            <li>✓ Enhanced table headers with ocean gradient</li>
+            <li>✓ Status indicators using logo colors</li>
+            <li>✓ Form focus states with ocean blue highlight</li>
+        </ul>
+
+        <h2>📍 Logo Locations</h2>
+
+        <p>Your logo now appears on these pages:</p>
+        <ul>
+            <li>Main: index.jsp, login.jsp, register.jsp</li>
+            <li>Admin: dashboard, bookings, rooms, customers (4 pages)</li>
+            <li>Manager: dashboard, bookings, rooms, staff, reports (5 pages)</li>
+            <li>Receptionist: dashboard, check-in, check-out, rooms, bookings (5 pages)</li>
+            <li>Customer: bookings, book-room (2 pages)</li>
+        </ul>
+
+        <div class="highlight" style="background: linear-gradient(135deg, #0B99D6 0%, #3DB3E5 100%); color: white;">
+            💡 TIP: If you update the logo later, just replace the logo.png file and refresh your browser!
+        </div>
+
+        <h2>🚀 Next Steps</h2>
+        <ol>
+            <li>Save your logo as <code>logo.png</code> in the images folder</li>
+            <li>Rebuild: <code>mvn clean package</code></li>
+            <li>Deploy the WAR file to Tomcat</li>
+            <li>Access your application and enjoy the new branded look!</li>
+        </ol>
+
+        <p style="margin-top: 40px; text-align: center; color: #0B99D6; font-weight: 600;">
+            🌊 Welcome to Ocean View Resort, Galle! 🌴
+        </p>
+    </div>
+</body>
+
+</html>

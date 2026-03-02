@@ -34,8 +34,10 @@
                         <!-- Navbar -->
                         <nav class="navbar navbar-expand-lg navbar-light sticky-top">
                             <div class="container-fluid navbar-container">
-                                <a href="${pageContext.request.contextPath}/index.jsp" class="navbar-brand">
-                                    <i class="bi bi-water"></i> Ocean View Resort
+                                <a href="${pageContext.request.contextPath}/index.jsp"
+                                    class="navbar-brand logo-container">
+                                    <img src="${pageContext.request.contextPath}/images/logo.png"
+                                        alt="Ocean View Resort" class="logo-image">
                                 </a>
                                 <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
                                     data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
@@ -80,13 +82,10 @@
                         <div style="display: flex;">
                             <!-- Sidebar -->
                             <aside class="dashboard-sidebar" style="width: 250px;">
-                                <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb;">
-                                    <a href="${pageContext.request.contextPath}/index.jsp"
-                                        style="text-decoration: none; color: inherit;">
-                                        <h3
-                                            style="margin: 0; font-size: 1.25rem; font-weight: 600; color: hsl(var(--ocean-blue));">
-                                            <i class="bi bi-water"></i> Ocean View Resort
-                                        </h3>
+                                <div style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; text-align: center;">
+                                    <a href="${pageContext.request.contextPath}/index.jsp" class="logo-container">
+                                        <img src="${pageContext.request.contextPath}/images/logo.png"
+                                            alt="Ocean View Resort" class="logo-image sidebar">
                                     </a>
                                 </div>
                                 <ul class="sidebar-nav">
