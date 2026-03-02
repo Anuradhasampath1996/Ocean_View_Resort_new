@@ -168,6 +168,10 @@
                                                                             </thead>
                                                                             <tbody>
                                                                                 <% for (Booking booking : allBookings) {
+                                                                                    String customerName = booking.getUserName() == null ? "-" : booking.getUserName();
+                                                                                    String roomNumber = booking.getRoomNumber() == null ? "-" : booking.getRoomNumber();
+                                                                                    String roomType = booking.getRoomType() == null ? "-" : booking.getRoomType();
+                                                                                    String specialRequests = booking.getSpecialRequests() == null || booking.getSpecialRequests().isBlank() ? "-" : booking.getSpecialRequests();
                                                                                     %>
                                                                                     <tr>
                                                                                         <td>#<%= booking.getId() %>
@@ -221,6 +225,22 @@
                                                                                                             <% } %>
                                                                                         </td>
                                                                                         <td>
+                                                                                            <button
+                                                                                                class="btn btn-secondary"
+                                                                                                style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                                                data-booking-id="<%= booking.getId() %>"
+                                                                                                data-customer="<%= customerName.replace("\"", "&quot;") %>"
+                                                                                                data-room-number="<%= roomNumber.replace("\"", "&quot;") %>"
+                                                                                                data-room-type="<%= roomType.replace("\"", "&quot;") %>"
+                                                                                                data-check-in="<%= booking.getCheckInDate() %>"
+                                                                                                data-check-out="<%= booking.getCheckOutDate() %>"
+                                                                                                data-guests="<%= booking.getNumberOfGuests() %>"
+                                                                                                data-amount="<%= booking.getTotalAmount() %>"
+                                                                                                data-status="<%= booking.getStatus() %>"
+                                                                                                data-special="<%= specialRequests.replace("\"", "&quot;") %>"
+                                                                                                onclick="openBookingDetails(this)">
+                                                                                                View
+                                                                                            </button>
                                                                                             <a class="btn btn-outline"
                                                                                                 style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
                                                                                                 href="${pageContext.request.contextPath}/bookings?action=invoice&id=<%= booking.getId() %>">
@@ -359,6 +379,61 @@
                                         </div>
                                     </div>
 
+                                    <div id="viewBookingModal"
+                                        style="display: none; position: fixed; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(0,0,0,0.45); z-index: 10000; align-items: center; justify-content: center;">
+                                        <div class="card" style="max-width: 700px; width: 100%; margin: 1rem;">
+                                            <div class="card-header flex justify-between items-center">
+                                                <h4 class="card-title" style="margin: 0;">Booking Details</h4>
+                                                <button class="btn btn-outline" type="button"
+                                                    onclick="closeBookingDetails()">Close</button>
+                                            </div>
+                                            <div class="card-content">
+                                                <div class="grid grid-cols-2" style="gap: 1rem;">
+                                                    <div class="card" style="border-radius: 12px;">
+                                                        <div class="card-header">
+                                                            <h5 style="margin: 0;">Customer Details</h5>
+                                                        </div>
+                                                        <div class="card-content">
+                                                            <p><strong>Name:</strong> <span id="viewCustomerName">-</span></p>
+                                                            <p><strong>Guests:</strong> <span id="viewGuests">-</span></p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="card" style="border-radius: 12px;">
+                                                        <div class="card-header">
+                                                            <h5 style="margin: 0;">Room Details</h5>
+                                                        </div>
+                                                        <div class="card-content">
+                                                            <p><strong>Room Number:</strong> <span id="viewRoomNumber">-</span></p>
+                                                            <p><strong>Room Type:</strong> <span id="viewRoomType">-</span></p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+
+                                                <div class="card" style="margin-top: 1rem; border-radius: 12px;">
+                                                    <div class="card-header">
+                                                        <h5 style="margin: 0;">Booking Details</h5>
+                                                    </div>
+                                                    <div class="card-content">
+                                                        <div class="grid grid-cols-2" style="gap: 0.75rem;">
+                                                            <p><strong>Booking ID:</strong> #<span id="viewBookingId">-</span></p>
+                                                            <p><strong>Status:</strong> <span id="viewStatus">-</span></p>
+                                                            <p><strong>Check-in:</strong> <span id="viewCheckIn">-</span></p>
+                                                            <p><strong>Check-out:</strong> <span id="viewCheckOut">-</span></p>
+                                                            <p><strong>Total Amount:</strong> LKR <span id="viewAmount">-</span></p>
+                                                        </div>
+                                                        <p style="margin-top: 0.5rem;"><strong>Special Requests:</strong> <span id="viewSpecialRequests">-</span></p>
+                                                    </div>
+                                                </div>
+
+                                                <div class="flex gap-2" style="justify-content: flex-end; margin-top: 1rem;">
+                                                    <a id="viewInvoiceLink" class="btn btn-primary" href="#">
+                                                        <i class="bi bi-download"></i> Download Invoice
+                                                    </a>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+
                                     <script
                                         src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
                                     <script>
@@ -459,6 +534,38 @@
                                             })
                                                 .then(() => location.reload())
                                                 .catch((error) => alert(error.message || 'Failed to edit booking status'));
+                                        }
+
+                                        function openBookingDetails(button) {
+                                            const bookingId = button.dataset.bookingId || '-';
+                                            const customer = button.dataset.customer || '-';
+                                            const roomNumber = button.dataset.roomNumber || '-';
+                                            const roomType = button.dataset.roomType || '-';
+                                            const checkIn = button.dataset.checkIn || '-';
+                                            const checkOut = button.dataset.checkOut || '-';
+                                            const guests = button.dataset.guests || '-';
+                                            const amount = button.dataset.amount || '-';
+                                            const status = button.dataset.status || '-';
+                                            const special = button.dataset.special || '-';
+
+                                            document.getElementById('viewBookingId').textContent = bookingId;
+                                            document.getElementById('viewCustomerName').textContent = customer;
+                                            document.getElementById('viewRoomNumber').textContent = roomNumber;
+                                            document.getElementById('viewRoomType').textContent = roomType;
+                                            document.getElementById('viewCheckIn').textContent = checkIn;
+                                            document.getElementById('viewCheckOut').textContent = checkOut;
+                                            document.getElementById('viewGuests').textContent = guests;
+                                            document.getElementById('viewAmount').textContent = amount;
+                                            document.getElementById('viewStatus').textContent = status;
+                                            document.getElementById('viewSpecialRequests').textContent = special;
+                                            document.getElementById('viewInvoiceLink').href =
+                                                '${pageContext.request.contextPath}/bookings?action=invoice&id=' + bookingId;
+
+                                            document.getElementById('viewBookingModal').style.display = 'flex';
+                                        }
+
+                                        function closeBookingDetails() {
+                                            document.getElementById('viewBookingModal').style.display = 'none';
                                         }
                                     </script>
                             </body>

@@ -5,6 +5,11 @@ import com.example.oceanviewresortnew.dao.RoomDAO;
 import com.example.oceanviewresortnew.model.Booking;
 import com.example.oceanviewresortnew.model.Room;
 import com.google.gson.Gson;
+import com.lowagie.text.*;
+import com.lowagie.text.pdf.PdfPCell;
+import com.lowagie.text.pdf.PdfPTable;
+import com.lowagie.text.pdf.PdfWriter;
+import com.lowagie.text.pdf.draw.LineSeparator;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
@@ -63,7 +68,7 @@ public class BookingServlet extends HttpServlet {
             HttpSession session = request.getSession(false);
             Object roleObj = session != null ? session.getAttribute("role") : null;
             String role = roleObj != null ? roleObj.toString() : null;
-            String action = request.getParameter("action");
+            String action = resolveAction(request);
 
             if ("confirm".equals(action)) {
                 action = "updateStatus";
@@ -110,6 +115,52 @@ public class BookingServlet extends HttpServlet {
 
     private boolean isStaffRole(String role) {
         return "admin".equals(role) || "manager".equals(role) || "receptionist".equals(role);
+    }
+
+    private String resolveAction(HttpServletRequest request) {
+        String actionRaw = firstNonBlank(
+                request.getParameter("action"),
+                request.getParameter("bookingAction"),
+                request.getParameter("op"),
+                request.getParameter("operation"));
+
+        if (actionRaw != null) {
+            String normalized = actionRaw.trim();
+            if (!normalized.isBlank()) {
+                String lower = normalized.toLowerCase();
+                return switch (lower) {
+                    case "create", "new", "add", "book" -> "create";
+                    case "createbystaff", "create_by_staff", "createstaff", "addbooking", "add_booking" ->
+                        "createByStaff";
+                    case "updatestatus", "update_status", "status" -> "updateStatus";
+                    case "delete", "remove" -> "delete";
+                    case "confirm" -> "confirm";
+                    case "complete" -> "complete";
+                    case "cancel", "cancelled", "canceled" -> "cancel";
+                    default -> normalized;
+                };
+            }
+        }
+
+        boolean hasUser = hasNonBlank(request.getParameter("userId"))
+                || hasNonBlank(request.getParameter("customerId"));
+        boolean hasRoom = hasNonBlank(request.getParameter("roomId"));
+        boolean hasDates = hasNonBlank(request.getParameter("checkIn"))
+                && hasNonBlank(request.getParameter("checkOut"));
+
+        if (hasUser && hasRoom && hasDates) {
+            return "createByStaff";
+        }
+
+        if (hasRoom && hasDates) {
+            return "create";
+        }
+
+        return null;
+    }
+
+    private boolean hasNonBlank(String value) {
+        return value != null && !value.isBlank();
     }
 
     private void listBookings(HttpServletRequest request, HttpServletResponse response)
@@ -163,40 +214,144 @@ public class BookingServlet extends HttpServlet {
             return;
         }
 
-        String fileName = "invoice_booking_" + bookingId + ".html";
-        response.setContentType("text/html;charset=UTF-8");
+        String fileName = "invoice_booking_" + bookingId + ".pdf";
+        response.setContentType("application/pdf");
         response.setHeader("Content-Disposition", "attachment; filename=\"" + fileName + "\"");
 
-        PrintWriter out = response.getWriter();
-        out.println("<!DOCTYPE html>");
-        out.println("<html><head><meta charset='UTF-8'><title>Invoice #" + bookingId + "</title>");
-        out.println("<style>");
-        out.println("body{font-family:Arial,sans-serif;padding:24px;color:#1f2937;}");
-        out.println(".wrap{max-width:800px;margin:0 auto;border:1px solid #e5e7eb;border-radius:10px;padding:24px;}");
-        out.println("h1{margin:0 0 8px;color:#1298c7;} h2{margin:0 0 20px;color:#374151;font-size:18px;}");
-        out.println("table{width:100%;border-collapse:collapse;margin-top:16px;}");
-        out.println("th,td{border:1px solid #e5e7eb;padding:10px;text-align:left;}");
-        out.println("th{background:#f9fafb;width:35%;}");
-        out.println(".total{font-size:20px;font-weight:bold;color:#1298c7;}");
-        out.println("</style></head><body>");
-        out.println("<div class='wrap'>");
-        out.println("<h1>Ocean View Resort</h1>");
-        out.println("<h2>Booking Invoice</h2>");
-        out.println("<table>");
-        out.println("<tr><th>Invoice Generated</th><td>"
-                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "</td></tr>");
-        out.println("<tr><th>Booking ID</th><td>#" + booking.getId() + "</td></tr>");
-        out.println("<tr><th>Customer</th><td>" + safe(booking.getUserName()) + "</td></tr>");
-        out.println("<tr><th>Room</th><td>" + safe(booking.getRoomNumber()) + " (" + safe(booking.getRoomType())
-                + ")</td></tr>");
-        out.println("<tr><th>Check-in</th><td>" + booking.getCheckInDate() + "</td></tr>");
-        out.println("<tr><th>Check-out</th><td>" + booking.getCheckOutDate() + "</td></tr>");
-        out.println("<tr><th>Guests</th><td>" + booking.getNumberOfGuests() + "</td></tr>");
-        out.println("<tr><th>Status</th><td>" + safe(booking.getStatus()) + "</td></tr>");
-        out.println("<tr><th>Special Requests</th><td>" + safe(booking.getSpecialRequests()) + "</td></tr>");
-        out.println("<tr><th>Total Amount</th><td class='total'>LKR " + booking.getTotalAmount() + "</td></tr>");
-        out.println("</table>");
-        out.println("</div></body></html>");
+        // Brand colors
+        java.awt.Color brandBlue = new java.awt.Color(0x12, 0x98, 0xC7);
+        java.awt.Color brandGold = new java.awt.Color(0xFF, 0xB0, 0x1A);
+        java.awt.Color lightBg = new java.awt.Color(0xF0, 0xF8, 0xFF);
+        java.awt.Color white = java.awt.Color.WHITE;
+
+        Document document = new Document(PageSize.A4, 40, 40, 40, 40);
+        try {
+            PdfWriter.getInstance(document, response.getOutputStream());
+            document.open();
+
+            // --- Fonts ---
+            Font titleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22, brandBlue);
+            Font subtitleFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, brandGold);
+            Font labelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 11, brandBlue);
+            Font bodyFont = FontFactory.getFont(FontFactory.HELVETICA, 11, java.awt.Color.DARK_GRAY);
+            Font totalLabelFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, brandBlue);
+            Font totalValueFont = FontFactory.getFont(FontFactory.HELVETICA_BOLD, 14, brandGold);
+            Font footerFont = FontFactory.getFont(FontFactory.HELVETICA_OBLIQUE, 10, java.awt.Color.GRAY);
+
+            // --- Header ---
+            PdfPTable header = new PdfPTable(1);
+            header.setWidthPercentage(100);
+            PdfPCell headerCell = new PdfPCell();
+            headerCell.setBackgroundColor(brandBlue);
+            headerCell.setPadding(16);
+            headerCell.setBorder(Rectangle.NO_BORDER);
+            Paragraph hotelName = new Paragraph("Ocean View Resort", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22, white));
+            hotelName.setAlignment(Element.ALIGN_CENTER);
+            headerCell.addElement(hotelName);
+            Paragraph tagline = new Paragraph("BOOKING INVOICE", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, brandGold));
+            tagline.setAlignment(Element.ALIGN_CENTER);
+            headerCell.addElement(tagline);
+            header.addCell(headerCell);
+            document.add(header);
+            document.add(new Paragraph(" "));
+
+            // --- Invoice meta ---
+            Paragraph meta = new Paragraph();
+            meta.add(new Chunk("Invoice #: ", labelFont));
+            meta.add(new Chunk("INV-" + String.format("%06d", booking.getId()), bodyFont));
+            meta.add(new Chunk("     Date: ", labelFont));
+            meta.add(new Chunk(LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")), bodyFont));
+            document.add(meta);
+            document.add(new Paragraph(" "));
+
+            // --- Separator ---
+            LineSeparator separator = new LineSeparator();
+            separator.setLineColor(brandBlue);
+            separator.setLineWidth(1.5f);
+            document.add(new Chunk(separator));
+            document.add(new Paragraph(" "));
+
+            // --- Details table ---
+            PdfPTable table = new PdfPTable(2);
+            table.setWidthPercentage(100);
+            table.setWidths(new float[] { 35f, 65f });
+
+            int row = 0;
+            addStyledRow(table, "Booking ID", "#" + booking.getId(), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Customer", safePdf(booking.getUserName()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Room", safePdf(booking.getRoomNumber()) + " (" + safePdf(booking.getRoomType()) + ")",
+                    labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Check-in", String.valueOf(booking.getCheckInDate()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Check-out", String.valueOf(booking.getCheckOutDate()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Guests", String.valueOf(booking.getNumberOfGuests()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Status", safePdf(booking.getStatus()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Special Requests", safePdf(booking.getSpecialRequests()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+
+            document.add(table);
+            document.add(new Paragraph(" "));
+
+            // --- Total banner ---
+            PdfPTable totalTable = new PdfPTable(2);
+            totalTable.setWidthPercentage(100);
+            totalTable.setWidths(new float[] { 65f, 35f });
+
+            PdfPCell totalLabelCell = new PdfPCell(new Phrase("Total Amount", totalLabelFont));
+            totalLabelCell.setBackgroundColor(lightBg);
+            totalLabelCell.setPadding(12);
+            totalLabelCell.setBorderColor(brandBlue);
+            totalLabelCell.setHorizontalAlignment(Element.ALIGN_RIGHT);
+            totalTable.addCell(totalLabelCell);
+
+            PdfPCell totalValCell = new PdfPCell(new Phrase("LKR " + booking.getTotalAmount(), totalValueFont));
+            totalValCell.setBackgroundColor(brandBlue);
+            totalValCell.setPadding(12);
+            totalValCell.setBorder(Rectangle.NO_BORDER);
+            totalValCell.setHorizontalAlignment(Element.ALIGN_CENTER);
+            totalTable.addCell(totalValCell);
+
+            document.add(totalTable);
+            document.add(new Paragraph(" "));
+            document.add(new Paragraph(" "));
+
+            // --- Separator ---
+            document.add(new Chunk(separator));
+            document.add(new Paragraph(" "));
+
+            // --- Footer ---
+            Paragraph footer = new Paragraph("Thank you for choosing Ocean View Resort.", footerFont);
+            footer.setAlignment(Element.ALIGN_CENTER);
+            document.add(footer);
+            Paragraph contact = new Paragraph("Email: info@oceanviewresort.lk  |  Phone: +94 11 234 5678", footerFont);
+            contact.setAlignment(Element.ALIGN_CENTER);
+            document.add(contact);
+
+        } catch (DocumentException exception) {
+            throw new IOException("Failed to generate PDF invoice", exception);
+        } finally {
+            if (document.isOpen()) {
+                document.close();
+            }
+        }
+    }
+
+    private void addStyledRow(PdfPTable table, String label, String value,
+                               Font labelFont, Font valueFont, java.awt.Color bgColor) {
+        PdfPCell labelCell = new PdfPCell(new Phrase(label, labelFont));
+        labelCell.setBackgroundColor(bgColor);
+        labelCell.setPadding(8);
+        labelCell.setBorderColor(new java.awt.Color(0xE5, 0xE7, 0xEB));
+
+        PdfPCell valueCell = new PdfPCell(new Phrase(value, valueFont));
+        valueCell.setBackgroundColor(bgColor);
+        valueCell.setPadding(8);
+        valueCell.setBorderColor(new java.awt.Color(0xE5, 0xE7, 0xEB));
+
+        table.addCell(labelCell);
+        table.addCell(valueCell);
+    }
+
+    private String safePdf(String value) {
+        return (value == null || value.isBlank()) ? "-" : value;
     }
 
     private void createBooking(HttpServletRequest request, HttpServletResponse response)

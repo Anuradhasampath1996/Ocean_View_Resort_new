@@ -136,6 +136,11 @@
                                                                     booking.getTotalAmount().doubleValue()) %>
                                                             </td>
                                                             <td>
+                                                                <a class="btn btn-outline"
+                                                                    style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                    href="${pageContext.request.contextPath}/bookings?action=invoice&id=<%= booking.getId() %>">
+                                                                    Invoice
+                                                                </a>
                                                                 <button class="btn btn-secondary"
                                                                     style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
                                                                     onclick="editBookingStatus(<%= booking.getId() %>, '<%= booking.getStatus() %>')">
