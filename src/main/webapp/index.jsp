@@ -60,11 +60,14 @@
         <section class="hero" id="home">
             <!-- Background Slideshow -->
             <div class="hero-slideshow">
-                <div class="hero-slide" style="background-image: url('${pageContext.request.contextPath}/images/slide 01.jpg');"></div>
-                <div class="hero-slide" style="background-image: url('${pageContext.request.contextPath}/images/slide 02.jpg');"></div>
-                <div class="hero-slide" style="background-image: url('${pageContext.request.contextPath}/images/slide 03.jpg');"></div>
+                <div class="hero-slide"
+                    style="background-image: url('${pageContext.request.contextPath}/images/slide 01.jpg');"></div>
+                <div class="hero-slide"
+                    style="background-image: url('${pageContext.request.contextPath}/images/slide 02.jpg');"></div>
+                <div class="hero-slide"
+                    style="background-image: url('${pageContext.request.contextPath}/images/slide 03.jpg');"></div>
             </div>
-            
+
             <!-- Hero Content -->
             <div class="hero-content">
                 <h1>Welcome to Paradise</h1>
@@ -82,31 +85,36 @@
             <div class="container">
                 <div class="section-title">
                     <h2 style="color: #1298c7; font-weight: 800; font-size: 2.8rem;">Why Choose Ocean View Resort?</h2>
-                    <p style="color: #6C757D; font-size: 1.2rem; font-weight: 500;">Experience the perfect blend of luxury and comfort</p>
+                    <p style="color: #6C757D; font-size: 1.2rem; font-weight: 500;">Experience the perfect blend of
+                        luxury and comfort</p>
                 </div>
                 <div class="grid grid-cols-4">
-                    <div class="card" style="border: none; box-shadow: 0 10px 30px rgba(18, 152, 199, 0.2); border-radius: 20px; background: linear-gradient(135deg, #1298c7 0%, #3db3db 100%); color: white; transition: transform 0.3s;">
+                    <div class="card"
+                        style="border: none; box-shadow: 0 10px 30px rgba(18, 152, 199, 0.2); border-radius: 20px; background: linear-gradient(135deg, #1298c7 0%, #3db3db 100%); color: white; transition: transform 0.3s;">
                         <div class="card-content text-center">
                             <i class="bi bi-water" style="font-size: 3.5rem; color: #ffb01a;"></i>
                             <h4 class="mt-3" style="font-weight: 700;">Ocean Front</h4>
                             <p style="opacity: 0.95;">Stunning views of the pristine ocean from every room</p>
                         </div>
                     </div>
-                    <div class="card" style="border: none; box-shadow: 0 10px 30px rgba(255, 176, 26, 0.2); border-radius: 20px; background: linear-gradient(135deg, #ffb01a 0%, #ffc44d 100%); color: white; transition: transform 0.3s;">
+                    <div class="card"
+                        style="border: none; box-shadow: 0 10px 30px rgba(255, 176, 26, 0.2); border-radius: 20px; background: linear-gradient(135deg, #ffb01a 0%, #ffc44d 100%); color: white; transition: transform 0.3s;">
                         <div class="card-content text-center">
                             <i class="bi bi-star-fill" style="font-size: 3.5rem; color: #1298c7;"></i>
                             <h4 class="mt-3" style="font-weight: 700;">5-Star Service</h4>
                             <p style="opacity: 0.95;">World-class hospitality and personalized attention</p>
                         </div>
                     </div>
-                    <div class="card" style="border: none; box-shadow: 0 10px 30px rgba(38, 222, 129, 0.2); border-radius: 20px; background: linear-gradient(135deg, #26de81 0%, #55efc4 100%); color: white; transition: transform 0.3s;">
+                    <div class="card"
+                        style="border: none; box-shadow: 0 10px 30px rgba(38, 222, 129, 0.2); border-radius: 20px; background: linear-gradient(135deg, #26de81 0%, #55efc4 100%); color: white; transition: transform 0.3s;">
                         <div class="card-content text-center">
                             <i class="bi bi-cup-hot" style="font-size: 3.5rem; color: #ff4757;"></i>
                             <h4 class="mt-3" style="font-weight: 700;">Fine Dining</h4>
                             <p style="opacity: 0.95;">Award-winning restaurants with ocean views</p>
                         </div>
                     </div>
-                    <div class="card" style="border: none; box-shadow: 0 10px 30px rgba(253, 121, 168, 0.2); border-radius: 20px; background: linear-gradient(135deg, #fd79a8 0%, #ff4757 100%); color: white; transition: transform 0.3s;">
+                    <div class="card"
+                        style="border: none; box-shadow: 0 10px 30px rgba(253, 121, 168, 0.2); border-radius: 20px; background: linear-gradient(135deg, #fd79a8 0%, #ff4757 100%); color: white; transition: transform 0.3s;">
                         <div class="card-content text-center">
                             <i class="bi bi-heart-pulse" style="font-size: 3.5rem; color: #ffeaa7;"></i>
                             <h4 class="mt-3" style="font-weight: 700;">Spa & Wellness</h4>
@@ -122,7 +130,8 @@
             <div class="container">
                 <div class="section-title">
                     <h2 style="color: #1298c7; font-weight: 800; font-size: 2.8rem;">Our Rooms</h2>
-                    <p style="color: #6C757D; font-size: 1.2rem; font-weight: 500;">Choose from our selection of luxurious accommodations</p>
+                    <p style="color: #6C757D; font-size: 1.2rem; font-weight: 500;">Choose from our selection of
+                        luxurious accommodations</p>
                 </div>
                 <div class="grid grid-cols-3">
                     <!-- Standard Room -->
@@ -182,14 +191,20 @@
         </section>
 
         <!-- Amenities Section -->
-        <section class="section" id="amenities" style="background: linear-gradient(135deg, #1298c7 0%, #3db3db 100%); color: white;">
+        <section class="section" id="amenities"
+            style="background: linear-gradient(135deg, #1298c7 0%, #3db3db 100%); color: white;">
             <div class="container">
                 <div class="section-title">
-                    <h2 style="color: white; font-weight: 800; font-size: 2.8rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.3);">Resort Amenities</h2>
-                    <p style="color: rgba(255,255,255,0.95); font-size: 1.2rem; font-weight: 500; text-shadow: 1px 1px 4px rgba(0,0,0,0.3);">Everything you need for a perfect vacation</p>
+                    <h2
+                        style="color: white; font-weight: 800; font-size: 2.8rem; text-shadow: 2px 2px 8px rgba(0,0,0,0.3);">
+                        Resort Amenities</h2>
+                    <p
+                        style="color: rgba(255,255,255,0.95); font-size: 1.2rem; font-weight: 500; text-shadow: 1px 1px 4px rgba(0,0,0,0.3);">
+                        Everything you need for a perfect vacation</p>
                 </div>
                 <div class="grid grid-cols-2">
-                    <div class="card" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
+                    <div class="card"
+                        style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
                         <div class="card-content">
                             <div class="flex gap-4">
                                 <i class="bi bi-wifi" style="font-size: 2.5rem; color: #ffb01a;"></i>
@@ -200,42 +215,45 @@
                             </div>
                         </div>
                     </div>
-                        </div>
-                    </div>
-                    <div class="card" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
-                        <div class="card-content">
-                            <div class="flex gap-4">
-                                <i class="bi bi-p-circle" style="font-size: 2.5rem; color: #ffeaa7;"></i>
-                                <div>
-                                    <h5 style="font-weight: 700; font-size: 1.3rem;">Free Parking</h5>
-                                    <p style="color: rgba(255,255,255,0.9);">Complimentary valet parking service</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
-                        <div class="card-content">
-                            <div class="flex gap-4">
-                                <i class="bi bi-bicycle" style="font-size: 2.5rem; color: #26de81;"></i>
-                                <div>
-                                    <h5 style="font-weight: 700; font-size: 1.3rem;">Fitness Center</h5>
-                                    <p style="color: rgba(255,255,255,0.9);">State-of-the-art gym equipment</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="card" style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
-                        <div class="card-content">
-                            <div class="flex gap-4">
-                                <i class="bi bi-cup-straw" style="font-size: 2.5rem; color: #fd79a8;"></i>
-                                <div>
-                                    <h5 style="font-weight: 700; font-size: 1.3rem;">Pool Bar</h5>
-                                    <p style="color: rgba(255,255,255,0.9);">Refreshments served poolside</p>
-                                </div>
-                            </div>
+                </div>
+            </div>
+            <div class="card"
+                style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
+                <div class="card-content">
+                    <div class="flex gap-4">
+                        <i class="bi bi-p-circle" style="font-size: 2.5rem; color: #ffeaa7;"></i>
+                        <div>
+                            <h5 style="font-weight: 700; font-size: 1.3rem;">Free Parking</h5>
+                            <p style="color: rgba(255,255,255,0.9);">Complimentary valet parking service</p>
                         </div>
                     </div>
                 </div>
+            </div>
+            <div class="card"
+                style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
+                <div class="card-content">
+                    <div class="flex gap-4">
+                        <i class="bi bi-bicycle" style="font-size: 2.5rem; color: #26de81;"></i>
+                        <div>
+                            <h5 style="font-weight: 700; font-size: 1.3rem;">Fitness Center</h5>
+                            <p style="color: rgba(255,255,255,0.9);">State-of-the-art gym equipment</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="card"
+                style="background: rgba(255, 255, 255, 0.15); backdrop-filter: blur(10px); border: 2px solid rgba(255,255,255,0.3); color: white;">
+                <div class="card-content">
+                    <div class="flex gap-4">
+                        <i class="bi bi-cup-straw" style="font-size: 2.5rem; color: #fd79a8;"></i>
+                        <div>
+                            <h5 style="font-weight: 700; font-size: 1.3rem;">Pool Bar</h5>
+                            <p style="color: rgba(255,255,255,0.9);">Refreshments served poolside</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
             </div>
         </section>
 

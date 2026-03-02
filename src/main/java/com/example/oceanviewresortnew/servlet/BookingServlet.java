@@ -183,10 +183,12 @@ public class BookingServlet extends HttpServlet {
         out.println("<h1>Ocean View Resort</h1>");
         out.println("<h2>Booking Invoice</h2>");
         out.println("<table>");
-        out.println("<tr><th>Invoice Generated</th><td>" + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "</td></tr>");
+        out.println("<tr><th>Invoice Generated</th><td>"
+                + LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm")) + "</td></tr>");
         out.println("<tr><th>Booking ID</th><td>#" + booking.getId() + "</td></tr>");
         out.println("<tr><th>Customer</th><td>" + safe(booking.getUserName()) + "</td></tr>");
-        out.println("<tr><th>Room</th><td>" + safe(booking.getRoomNumber()) + " (" + safe(booking.getRoomType()) + ")</td></tr>");
+        out.println("<tr><th>Room</th><td>" + safe(booking.getRoomNumber()) + " (" + safe(booking.getRoomType())
+                + ")</td></tr>");
         out.println("<tr><th>Check-in</th><td>" + booking.getCheckInDate() + "</td></tr>");
         out.println("<tr><th>Check-out</th><td>" + booking.getCheckOutDate() + "</td></tr>");
         out.println("<tr><th>Guests</th><td>" + booking.getNumberOfGuests() + "</td></tr>");
@@ -244,7 +246,8 @@ public class BookingServlet extends HttpServlet {
 
     private void createBookingByStaff(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
-        Integer userId = parseIntParameter(firstNonBlank(request.getParameter("userId"), request.getParameter("customerId")));
+        Integer userId = parseIntParameter(
+                firstNonBlank(request.getParameter("userId"), request.getParameter("customerId")));
         Integer roomId = parseIntParameter(request.getParameter("roomId"));
         String checkInValue = request.getParameter("checkIn");
         String checkOutValue = request.getParameter("checkOut");
@@ -307,27 +310,27 @@ public class BookingServlet extends HttpServlet {
     private void updateBookingStatus(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
         String idValue = firstNonBlank(
-            request.getParameter("id"),
-            request.getParameter("bookingId"),
-            request.getParameter("booking_id"),
-            request.getParameter("selectedBookingId"));
+                request.getParameter("id"),
+                request.getParameter("bookingId"),
+                request.getParameter("booking_id"),
+                request.getParameter("selectedBookingId"));
         Integer bookingId = parseIntParameter(idValue);
         String statusRaw = firstNonBlank(
                 (String) request.getAttribute("forcedStatus"),
                 request.getParameter("status"),
                 request.getParameter("bookingStatus"),
-            request.getParameter("newStatus"),
-            request.getParameter("booking_status"),
-            request.getParameter("state"),
-            request.getParameter("value"),
-            request.getParameter("actionType"),
-            request.getParameter("operation"));
+                request.getParameter("newStatus"),
+                request.getParameter("booking_status"),
+                request.getParameter("state"),
+                request.getParameter("value"),
+                request.getParameter("actionType"),
+                request.getParameter("operation"));
 
         String status = normalizeStatus(statusRaw);
 
         if (bookingId == null || status == null || status.isBlank()) {
             writeJsonError(response, HttpServletResponse.SC_BAD_REQUEST,
-                "Invalid booking id or status (id=" + idValue + ", status=" + statusRaw + ")");
+                    "Invalid booking id or status (id=" + idValue + ", status=" + statusRaw + ")");
             return;
         }
 

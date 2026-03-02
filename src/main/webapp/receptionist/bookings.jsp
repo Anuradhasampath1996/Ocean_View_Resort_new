@@ -147,26 +147,31 @@
                                                                         onclick="updateStatus(<%= booking.getId() %>, 'confirmed')">
                                                                         Confirm
                                                                     </button>
-                                                                <% } %>
-                                                                <% if ("confirmed".equals(booking.getStatus())) { %>
-                                                                    <button class="btn btn-secondary"
-                                                                        style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
-                                                                        onclick="updateStatus(<%= booking.getId() %>, 'completed')">
-                                                                        Complete
-                                                                    </button>
-                                                                <% } %>
-                                                                <% if (!"cancelled".equals(booking.getStatus()) && !"completed".equals(booking.getStatus())) { %>
-                                                                    <button class="btn btn-warning"
-                                                                        style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
-                                                                        onclick="updateStatus(<%= booking.getId() %>, 'cancelled')">
-                                                                        Cancel
-                                                                    </button>
-                                                                <% } %>
-                                                                <button class="btn btn-danger"
-                                                                    style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
-                                                                    onclick="deleteBooking(<%= booking.getId() %>)">
-                                                                    Delete
-                                                                </button>
+                                                                    <% } %>
+                                                                        <% if ("confirmed".equals(booking.getStatus()))
+                                                                            { %>
+                                                                            <button class="btn btn-secondary"
+                                                                                style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                                onclick="updateStatus(<%= booking.getId() %>, 'completed')">
+                                                                                Complete
+                                                                            </button>
+                                                                            <% } %>
+                                                                                <% if
+                                                                                    (!"cancelled".equals(booking.getStatus())
+                                                                                    &&
+                                                                                    !"completed".equals(booking.getStatus()))
+                                                                                    { %>
+                                                                                    <button class="btn btn-warning"
+                                                                                        style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                                        onclick="updateStatus(<%= booking.getId() %>, 'cancelled')">
+                                                                                        Cancel
+                                                                                    </button>
+                                                                                    <% } %>
+                                                                                        <button class="btn btn-danger"
+                                                                                            style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                                            onclick="deleteBooking(<%= booking.getId() %>)">
+                                                                                            Delete
+                                                                                        </button>
                                                             </td>
                                                         </tr>
                                                         <% } %>

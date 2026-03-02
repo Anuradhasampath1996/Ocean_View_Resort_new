@@ -209,13 +209,13 @@
                                                                                             </span>
                                                                                             <% } %>
                                                                         </td>
-                                                                            <td>
-                                                                                <a class="btn btn-outline"
-                                                                                    style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
-                                                                                    href="${pageContext.request.contextPath}/bookings?action=invoice&id=<%= booking.getId() %>">
-                                                                                    Download
-                                                                                </a>
-                                                                            </td>
+                                                                        <td>
+                                                                            <a class="btn btn-outline"
+                                                                                style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                                href="${pageContext.request.contextPath}/bookings?action=invoice&id=<%= booking.getId() %>">
+                                                                                Download
+                                                                            </a>
+                                                                        </td>
                                                                     </tr>
                                                                     <% } %>
                                                             </tbody>
