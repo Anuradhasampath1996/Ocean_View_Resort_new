@@ -43,6 +43,25 @@ public class RoomDAO {
         return rooms;
     }
 
+    public List<Room> getAvailableRoomsByDate(String checkIn, String checkOut) {
+        List<Room> rooms = new ArrayList<>();
+        String query = "SELECT * FROM rooms WHERE status != 'maintenance' AND id NOT IN (" +
+                "SELECT room_id FROM bookings WHERE status NOT IN ('cancelled') " +
+                "AND check_in_date < ? AND check_out_date > ?) ORDER BY room_number";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+            stmt.setString(1, checkOut);
+            stmt.setString(2, checkIn);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                rooms.add(extractRoomFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return rooms;
+    }
+
     public Room getRoomById(int id) {
         String query = "SELECT * FROM rooms WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();

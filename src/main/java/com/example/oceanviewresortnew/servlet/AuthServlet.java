@@ -40,22 +40,26 @@ public class AuthServlet extends HttpServlet {
         User user = userDAO.authenticate(username, password);
 
         if (user != null) {
+            String role = user.getRole();
+            // Block customer accounts from accessing this internal staff system
+            if ("customer".equals(role)) {
+                request.setAttribute("error", "Access denied. This system is for internal staff only.");
+                request.getRequestDispatcher("/login.jsp").forward(request, response);
+                return;
+            }
             HttpSession session = request.getSession();
             session.setAttribute("user", user);
             session.setAttribute("userId", user.getId());
             session.setAttribute("username", user.getUsername());
-            session.setAttribute("role", user.getRole());
+            session.setAttribute("role", role);
 
             // Redirect based on role
-            String role = user.getRole();
             if ("admin".equals(role)) {
                 response.sendRedirect(request.getContextPath() + "/admin/dashboard.jsp");
             } else if ("manager".equals(role)) {
                 response.sendRedirect(request.getContextPath() + "/manager/dashboard.jsp");
             } else if ("receptionist".equals(role)) {
                 response.sendRedirect(request.getContextPath() + "/receptionist/dashboard.jsp");
-            } else {
-                response.sendRedirect(request.getContextPath() + "/customer/bookings.jsp");
             }
         } else {
             request.setAttribute("error", "Invalid username or password");

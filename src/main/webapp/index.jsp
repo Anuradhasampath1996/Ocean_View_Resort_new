@@ -44,11 +44,7 @@
                             <% } else { %>
                                 <li class="nav-item">
                                     <a href="${pageContext.request.contextPath}/login.jsp"
-                                        class="btn btn-outline ms-2">Login</a>
-                                </li>
-                                <li class="nav-item">
-                                    <a href="${pageContext.request.contextPath}/login.jsp"
-                                        class="btn btn-primary ms-2">Book with Login</a>
+                                        class="btn btn-primary ms-2">Staff Login</a>
                                 </li>
                                 <% } %>
                     </ul>
@@ -73,9 +69,9 @@
                 <h1>Welcome to Paradise</h1>
                 <p>Experience luxury and tranquility at Ocean View Resort</p>
                 <div class="flex gap-4" style="justify-content: center;">
-                    <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-primary btn-lg">Book
-                        Now</a>
-                    <a href="#rooms" class="btn btn-secondary btn-lg">Explore Rooms</a>
+                    <a href="#rooms" class="btn btn-primary btn-lg">Explore Rooms</a>
+                    <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-secondary btn-lg">Staff
+                        Login</a>
                 </div>
             </div>
         </section>
@@ -146,8 +142,6 @@
                             <div class="flex items-center justify-between mt-3">
                                 <div class="room-price">LKR 15,000<span class="text-muted"
                                         style="font-size: 0.875rem;">/night</span></div>
-                                <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-primary">Book
-                                    Now</a>
                             </div>
                         </div>
                     </div>
@@ -164,8 +158,6 @@
                             <div class="flex items-center justify-between mt-3">
                                 <div class="room-price">LKR 25,000<span class="text-muted"
                                         style="font-size: 0.875rem;">/night</span></div>
-                                <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-primary">Book
-                                    Now</a>
                             </div>
                         </div>
                     </div>
@@ -181,8 +173,6 @@
                             <div class="flex items-center justify-between mt-3">
                                 <div class="room-price">LKR 45,000<span class="text-muted"
                                         style="font-size: 0.875rem;">/night</span></div>
-                                <a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-primary">Book
-                                    Now</a>
                             </div>
                         </div>
                     </div>

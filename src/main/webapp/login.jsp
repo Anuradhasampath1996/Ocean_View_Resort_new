@@ -11,29 +11,20 @@
         <link rel="stylesheet" href="${pageContext.request.contextPath}/css/style.css">
     </head>
 
-    <body>
-        <!-- Navbar -->
-        <nav class="navbar">
-            <div class="navbar-container">
-                <a href="${pageContext.request.contextPath}/index.jsp" class="navbar-brand logo-container">
-                    <img src="${pageContext.request.contextPath}/images/logo.png" alt="Ocean View Resort"
-                        class="logo-image">
-                </a>
-                <ul class="navbar-nav">
-                    <li><a href="${pageContext.request.contextPath}/index.jsp" class="nav-link">Home</a></li>
-                    <li><a href="${pageContext.request.contextPath}/index.jsp#contact" class="btn btn-primary">Contact
-                            Admin</a>
-                    </li>
-                </ul>
-            </div>
-        </nav>
+    <body
+        style="min-height:100vh; display:flex; align-items:center; justify-content:center; background: linear-gradient(135deg, #e0f2fe 0%, #bae6fd 100%);">
 
-        <section class="section">
+        <section style="width:100%;">
             <div class="container container-sm">
-                <div class="card" style="max-width: 500px; margin: 4rem auto;">
-                    <div class="card-header text-center">
+                <div class="card"
+                    style="max-width: 500px; margin: 2rem auto; box-shadow: 0 8px 32px rgba(18,152,199,0.15);">
+                    <div class="card-header text-center" style="padding-top: 2rem;">
+                        <div style="margin-bottom: 1rem;">
+                            <img src="${pageContext.request.contextPath}/images/logo.png" alt="Ocean View Resort"
+                                style="max-height: 80px; max-width: 220px; object-fit: contain;">
+                        </div>
                         <h2 class="card-title">Welcome Back</h2>
-                        <p class="card-description">Login to your account</p>
+                        <p class="card-description">Staff Login</p>
                     </div>
                     <div class="card-content">
                         <% if (request.getAttribute("error") !=null) { %>
@@ -82,8 +73,7 @@
                                                 style="font-size: 0.875rem; margin: 0; line-height: 1.8;">
                                                 <strong>Admin:</strong> admin / admin123<br>
                                                 <strong>Manager:</strong> manager / manager123<br>
-                                                <strong>Receptionist:</strong> receptionist / reception123<br>
-                                                <strong>Customer:</strong> john_doe / customer123
+                                                <strong>Receptionist:</strong> receptionist / reception123
                                             </p>
                                         </div>
                     </div>

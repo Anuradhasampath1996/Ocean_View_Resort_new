@@ -2,8 +2,11 @@ package com.example.oceanviewresortnew.servlet;
 
 import com.example.oceanviewresortnew.dao.BookingDAO;
 import com.example.oceanviewresortnew.dao.RoomDAO;
+import com.example.oceanviewresortnew.dao.UserDAO;
 import com.example.oceanviewresortnew.model.Booking;
 import com.example.oceanviewresortnew.model.Room;
+import com.example.oceanviewresortnew.model.User;
+import com.example.oceanviewresortnew.util.EmailService;
 import com.google.gson.Gson;
 import com.lowagie.text.*;
 import com.lowagie.text.pdf.PdfPCell;
@@ -28,12 +31,14 @@ import java.util.List;
 public class BookingServlet extends HttpServlet {
     private BookingDAO bookingDAO;
     private RoomDAO roomDAO;
+    private UserDAO userDAO;
     private Gson gson;
 
     @Override
     public void init() {
         bookingDAO = new BookingDAO();
         roomDAO = new RoomDAO();
+        userDAO = new UserDAO();
         gson = new Gson();
     }
 
@@ -58,6 +63,25 @@ public class BookingServlet extends HttpServlet {
                 return;
             }
             downloadInvoice(request, response);
+        } else if ("availableRooms".equals(action)) {
+            HttpSession session = request.getSession(false);
+            Object roleObj = session != null ? session.getAttribute("role") : null;
+            String role = roleObj != null ? roleObj.toString() : null;
+            if (!isStaffRole(role)) {
+                writeJsonError(response, HttpServletResponse.SC_FORBIDDEN, "Access denied");
+                return;
+            }
+            String checkIn = request.getParameter("checkIn");
+            String checkOut = request.getParameter("checkOut");
+            if (!hasNonBlank(checkIn) || !hasNonBlank(checkOut)) {
+                writeJsonError(response, HttpServletResponse.SC_BAD_REQUEST, "checkIn and checkOut required");
+                return;
+            }
+            List<Room> availRooms = roomDAO.getAvailableRoomsByDate(checkIn, checkOut);
+            response.setContentType("application/json;charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            out.print(gson.toJson(availRooms));
+            out.flush();
         }
     }
 
@@ -245,10 +269,12 @@ public class BookingServlet extends HttpServlet {
             headerCell.setBackgroundColor(brandBlue);
             headerCell.setPadding(16);
             headerCell.setBorder(Rectangle.NO_BORDER);
-            Paragraph hotelName = new Paragraph("Ocean View Resort", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22, white));
+            Paragraph hotelName = new Paragraph("Ocean View Resort",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 22, white));
             hotelName.setAlignment(Element.ALIGN_CENTER);
             headerCell.addElement(hotelName);
-            Paragraph tagline = new Paragraph("BOOKING INVOICE", FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, brandGold));
+            Paragraph tagline = new Paragraph("BOOKING INVOICE",
+                    FontFactory.getFont(FontFactory.HELVETICA_BOLD, 12, brandGold));
             tagline.setAlignment(Element.ALIGN_CENTER);
             headerCell.addElement(tagline);
             header.addCell(headerCell);
@@ -277,15 +303,22 @@ public class BookingServlet extends HttpServlet {
             table.setWidths(new float[] { 35f, 65f });
 
             int row = 0;
-            addStyledRow(table, "Booking ID", "#" + booking.getId(), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
-            addStyledRow(table, "Customer", safePdf(booking.getUserName()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Booking ID", "#" + booking.getId(), labelFont, bodyFont,
+                    row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Customer", safePdf(booking.getUserName()), labelFont, bodyFont,
+                    row++ % 2 == 0 ? lightBg : white);
             addStyledRow(table, "Room", safePdf(booking.getRoomNumber()) + " (" + safePdf(booking.getRoomType()) + ")",
                     labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
-            addStyledRow(table, "Check-in", String.valueOf(booking.getCheckInDate()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
-            addStyledRow(table, "Check-out", String.valueOf(booking.getCheckOutDate()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
-            addStyledRow(table, "Guests", String.valueOf(booking.getNumberOfGuests()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
-            addStyledRow(table, "Status", safePdf(booking.getStatus()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
-            addStyledRow(table, "Special Requests", safePdf(booking.getSpecialRequests()), labelFont, bodyFont, row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Check-in", String.valueOf(booking.getCheckInDate()), labelFont, bodyFont,
+                    row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Check-out", String.valueOf(booking.getCheckOutDate()), labelFont, bodyFont,
+                    row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Guests", String.valueOf(booking.getNumberOfGuests()), labelFont, bodyFont,
+                    row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Status", safePdf(booking.getStatus()), labelFont, bodyFont,
+                    row++ % 2 == 0 ? lightBg : white);
+            addStyledRow(table, "Special Requests", safePdf(booking.getSpecialRequests()), labelFont, bodyFont,
+                    row++ % 2 == 0 ? lightBg : white);
 
             document.add(table);
             document.add(new Paragraph(" "));
@@ -335,7 +368,7 @@ public class BookingServlet extends HttpServlet {
     }
 
     private void addStyledRow(PdfPTable table, String label, String value,
-                               Font labelFont, Font valueFont, java.awt.Color bgColor) {
+            Font labelFont, Font valueFont, java.awt.Color bgColor) {
         PdfPCell labelCell = new PdfPCell(new Phrase(label, labelFont));
         labelCell.setBackgroundColor(bgColor);
         labelCell.setPadding(8);
@@ -401,8 +434,32 @@ public class BookingServlet extends HttpServlet {
 
     private void createBookingByStaff(HttpServletRequest request, HttpServletResponse response)
             throws IOException {
+        boolean isAjax = "json".equals(request.getParameter("responseType"));
+
         Integer userId = parseIntParameter(
                 firstNonBlank(request.getParameter("userId"), request.getParameter("customerId")));
+
+        // Inline new-customer creation when no userId supplied
+        if (userId == null) {
+            String newName = request.getParameter("newCustomerName");
+            String newEmail = request.getParameter("newCustomerEmail");
+            String newPhone = request.getParameter("newCustomerPhone");
+            if (hasNonBlank(newName) && hasNonBlank(newEmail)) {
+                User cust = new User();
+                cust.setFullName(newName.trim());
+                cust.setEmail(newEmail.trim());
+                cust.setPhone(newPhone != null && !newPhone.isBlank() ? newPhone.trim() : null);
+                cust.setRole("customer");
+                cust.setUsername("cust_" + System.currentTimeMillis());
+                cust.setPassword("NoLogin_" + System.currentTimeMillis());
+                if (userDAO.register(cust)) {
+                    User created = userDAO.getUserByEmail(newEmail.trim());
+                    if (created != null)
+                        userId = created.getId();
+                }
+            }
+        }
+
         Integer roomId = parseIntParameter(request.getParameter("roomId"));
         String checkInValue = request.getParameter("checkIn");
         String checkOutValue = request.getParameter("checkOut");
@@ -411,7 +468,10 @@ public class BookingServlet extends HttpServlet {
 
         if (userId == null || roomId == null || numberOfGuests == null || checkInValue == null || checkOutValue == null
                 || checkInValue.isBlank() || checkOutValue.isBlank()) {
-            response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_input");
+            if (isAjax)
+                writeJsonError(response, HttpServletResponse.SC_BAD_REQUEST, "Missing required fields");
+            else
+                response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_input");
             return;
         }
 
@@ -421,23 +481,35 @@ public class BookingServlet extends HttpServlet {
             checkIn = Date.valueOf(checkInValue);
             checkOut = Date.valueOf(checkOutValue);
         } catch (IllegalArgumentException exception) {
-            response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_dates");
+            if (isAjax)
+                writeJsonError(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid dates");
+            else
+                response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_dates");
             return;
         }
 
         if (!checkOut.toLocalDate().isAfter(checkIn.toLocalDate())) {
-            response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_dates");
+            if (isAjax)
+                writeJsonError(response, HttpServletResponse.SC_BAD_REQUEST, "Check-out must be after check-in");
+            else
+                response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_dates");
             return;
         }
 
         if (!bookingDAO.isRoomAvailable(roomId, checkIn, checkOut)) {
-            response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=room_not_available");
+            if (isAjax)
+                writeJsonError(response, HttpServletResponse.SC_CONFLICT, "Room not available for selected dates");
+            else
+                response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=room_not_available");
             return;
         }
 
         Room room = roomDAO.getRoomById(roomId);
         if (room == null) {
-            response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_room");
+            if (isAjax)
+                writeJsonError(response, HttpServletResponse.SC_BAD_REQUEST, "Invalid room");
+            else
+                response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=invalid_room");
             return;
         }
 
@@ -454,11 +526,22 @@ public class BookingServlet extends HttpServlet {
         booking.setStatus("pending");
         booking.setSpecialRequests(specialRequests);
 
-        boolean success = bookingDAO.createBooking(booking);
-        if (success) {
-            response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?success=booking_created");
+        int newBookingId = bookingDAO.createBookingGetId(booking);
+        boolean success = newBookingId > 0;
+
+        if (isAjax) {
+            response.setContentType("application/json;charset=UTF-8");
+            PrintWriter out = response.getWriter();
+            if (success)
+                out.print("{\"success\":true,\"bookingId\":" + newBookingId + "}");
+            else
+                out.print("{\"success\":false,\"message\":\"Failed to create booking\"}");
+            out.flush();
         } else {
-            response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=booking_create_failed");
+            if (success)
+                response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?success=booking_created");
+            else
+                response.sendRedirect(request.getContextPath() + "/admin/bookings.jsp?error=booking_create_failed");
         }
     }
 
@@ -500,6 +583,17 @@ public class BookingServlet extends HttpServlet {
         if (success) {
             if ("confirmed".equals(status)) {
                 roomDAO.updateRoomStatus(booking.getRoomId(), "occupied");
+
+                // Send confirmation email to the customer
+                try {
+                    Booking confirmedBooking = bookingDAO.getBookingById(bookingId);
+                    User customer = userDAO.getUserById(booking.getUserId());
+                    if (customer != null && customer.getEmail() != null && !customer.getEmail().isBlank()) {
+                        EmailService.sendBookingConfirmation(customer.getEmail(), confirmedBooking);
+                    }
+                } catch (Exception emailEx) {
+                    emailEx.printStackTrace(); // Don't fail the request if email fails
+                }
             } else if ("cancelled".equals(status) || "completed".equals(status)) {
                 roomDAO.updateRoomStatus(booking.getRoomId(), "available");
             }

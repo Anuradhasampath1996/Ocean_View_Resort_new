@@ -4,14 +4,17 @@ import com.example.oceanviewresortnew.dao.RoomDAO;
 import com.example.oceanviewresortnew.model.Room;
 import com.google.gson.Gson;
 import jakarta.servlet.ServletException;
+import jakarta.servlet.annotation.MultipartConfig;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.*;
 
-import java.io.IOException;
-import java.io.PrintWriter;
+import java.io.*;
 import java.math.BigDecimal;
+import java.nio.file.*;
 import java.util.List;
+import java.util.UUID;
 
+@MultipartConfig(maxFileSize = 5 * 1024 * 1024, maxRequestSize = 10 * 1024 * 1024)
 @WebServlet(name = "RoomServlet", value = "/rooms")
 public class RoomServlet extends HttpServlet {
     private RoomDAO roomDAO;
@@ -102,8 +105,8 @@ public class RoomServlet extends HttpServlet {
         room.setCapacity(Integer.parseInt(request.getParameter("capacity")));
         room.setDescription(request.getParameter("description"));
         room.setAmenities(request.getParameter("amenities"));
-        room.setImageUrl(request.getParameter("imageUrl"));
         room.setStatus("available");
+        room.setImageUrl(resolveImageUrl(request));
 
         boolean success = roomDAO.addRoom(room);
 
@@ -124,8 +127,15 @@ public class RoomServlet extends HttpServlet {
         room.setCapacity(Integer.parseInt(request.getParameter("capacity")));
         room.setDescription(request.getParameter("description"));
         room.setAmenities(request.getParameter("amenities"));
-        room.setImageUrl(request.getParameter("imageUrl"));
         room.setStatus(request.getParameter("status"));
+
+        String resolvedImage = resolveImageUrl(request);
+        if (resolvedImage != null && !resolvedImage.isEmpty()) {
+            room.setImageUrl(resolvedImage);
+        } else {
+            // keep existing image
+            room.setImageUrl(request.getParameter("existingImageUrl"));
+        }
 
         boolean success = roomDAO.updateRoom(room);
 
@@ -134,6 +144,29 @@ public class RoomServlet extends HttpServlet {
         } else {
             response.sendRedirect(request.getContextPath() + "/admin/rooms.jsp?error=update_failed");
         }
+    }
+
+    /**
+     * Returns image URL: uploaded file path takes priority over typed URL.
+     */
+    private String resolveImageUrl(HttpServletRequest request) throws IOException, ServletException {
+        Part filePart = request.getPart("imageFile");
+        if (filePart != null && filePart.getSize() > 0) {
+            String originalName = Paths.get(filePart.getSubmittedFileName()).getFileName().toString();
+            String ext = originalName.contains(".") ? originalName.substring(originalName.lastIndexOf('.')) : ".jpg";
+            String savedName = UUID.randomUUID().toString() + ext;
+
+            String uploadDir = getServletContext().getRealPath("/images/rooms");
+            File dir = new File(uploadDir);
+            if (!dir.exists())
+                dir.mkdirs();
+
+            filePart.write(uploadDir + File.separator + savedName);
+            return request.getContextPath() + "/images/rooms/" + savedName;
+        }
+        // Fall back to typed URL
+        String url = request.getParameter("imageUrl");
+        return (url != null) ? url.trim() : "";
     }
 
     private void deleteRoom(HttpServletRequest request, HttpServletResponse response)

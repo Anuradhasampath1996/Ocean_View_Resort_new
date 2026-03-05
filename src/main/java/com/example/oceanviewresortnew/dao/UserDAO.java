@@ -83,6 +83,39 @@ public class UserDAO {
         return users;
     }
 
+    public List<User> searchCustomers(String query) {
+        List<User> users = new ArrayList<>();
+        String q = (query != null && !query.isBlank()) ? "%" + query.toLowerCase() + "%" : "%";
+        String sql = "SELECT * FROM users WHERE role = 'customer' AND (LOWER(full_name) LIKE ? OR LOWER(email) LIKE ?) ORDER BY full_name LIMIT 20";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, q);
+            stmt.setString(2, q);
+            ResultSet rs = stmt.executeQuery();
+            while (rs.next()) {
+                users.add(extractUserFromResultSet(rs));
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return users;
+    }
+
+    public User getUserByEmail(String email) {
+        String sql = "SELECT * FROM users WHERE email = ? LIMIT 1";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(sql)) {
+            stmt.setString(1, email);
+            ResultSet rs = stmt.executeQuery();
+            if (rs.next()) {
+                return extractUserFromResultSet(rs);
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return null;
+    }
+
     public boolean updateUser(User user) {
         String query = "UPDATE users SET username = ?, email = ?, full_name = ?, phone = ?, role = ? WHERE id = ?";
         try (Connection conn = DatabaseConnection.getConnection();
@@ -94,6 +127,26 @@ public class UserDAO {
             stmt.setString(4, user.getPhone());
             stmt.setString(5, user.getRole());
             stmt.setInt(6, user.getId());
+
+            return stmt.executeUpdate() > 0;
+        } catch (SQLException e) {
+            e.printStackTrace();
+            return false;
+        }
+    }
+
+    public boolean updateUserWithPassword(User user) {
+        String query = "UPDATE users SET username = ?, password = ?, email = ?, full_name = ?, phone = ?, role = ? WHERE id = ?";
+        try (Connection conn = DatabaseConnection.getConnection();
+                PreparedStatement stmt = conn.prepareStatement(query)) {
+
+            stmt.setString(1, user.getUsername());
+            stmt.setString(2, BCrypt.hashpw(user.getPassword(), BCrypt.gensalt()));
+            stmt.setString(3, user.getEmail());
+            stmt.setString(4, user.getFullName());
+            stmt.setString(5, user.getPhone());
+            stmt.setString(6, user.getRole());
+            stmt.setInt(7, user.getId());
 
             return stmt.executeUpdate() > 0;
         } catch (SQLException e) {

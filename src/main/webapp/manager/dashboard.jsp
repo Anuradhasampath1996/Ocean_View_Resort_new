@@ -1,4 +1,4 @@
-<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ page import="com.example.oceanviewresortnew.dao.*" %>
         <%@ page import="com.example.oceanviewresortnew.model.*" %>
             <%@ page import="java.util.*" %>
@@ -8,15 +8,9 @@
                     totalBookings=bookingDAO.getTotalBookingsCount(); List<Room> allRooms = roomDAO.getAllRooms();
                     List<User> allUsers = userDAO.getAllUsers();
                         List<Booking> recentBookings = bookingDAO.getAllBookings();
-
                             int availableRooms = 0;
-                            int occupiedRooms = 0;
                             for (Room room : allRooms) {
-                            if ("available".equals(room.getStatus())) {
-                            availableRooms++;
-                            } else if ("occupied".equals(room.getStatus())) {
-                            occupiedRooms++;
-                            }
+                            if ("available".equals(room.getStatus())) availableRooms++;
                             }
                             %>
                             <!DOCTYPE html>
@@ -34,183 +28,124 @@
                             </head>
 
                             <body>
-                                <!-- Navbar -->
-                                <nav class="navbar navbar-expand-lg navbar-light sticky-top">
-                                    <div class="container-fluid navbar-container">
-                                        <a href="${pageContext.request.contextPath}/index.jsp"
-                                            class="navbar-brand logo-container">
+                                <aside class="dashboard-sidebar" id="sidebar">
+                                    <div class="sidebar-header">
+                                        <a href="${pageContext.request.contextPath}/index.jsp" class="logo-container">
                                             <img src="${pageContext.request.contextPath}/images/logo.png"
-                                                alt="Ocean View Resort" class="logo-image">
+                                                alt="Ocean View Resort" class="logo-image sidebar">
                                         </a>
-                                        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
-                                            data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false"
-                                            aria-label="Toggle navigation">
-                                            <span class="navbar-toggler-icon"></span>
-                                        </button>
-                                        <div class="collapse navbar-collapse" id="navbarNav">
-                                            <ul class="navbar-nav ms-auto">
-                                                <li class="nav-item"><a
-                                                        href="${pageContext.request.contextPath}/manager/dashboard.jsp"
-                                                        class="nav-link active"><i class="bi bi-speedometer2"></i>
-                                                        Dashboard</a></li>
-                                                <li class="nav-item"><a
-                                                        href="${pageContext.request.contextPath}/manager/bookings.jsp"
-                                                        class="nav-link"><i class="bi bi-calendar-check"></i>
-                                                        Bookings</a></li>
-                                                <li class="nav-item"><a
-                                                        href="${pageContext.request.contextPath}/manager/rooms.jsp"
-                                                        class="nav-link"><i class="bi bi-door-open"></i> Rooms</a></li>
-                                                <li class="nav-item"><a
-                                                        href="${pageContext.request.contextPath}/manager/staff.jsp"
-                                                        class="nav-link"><i class="bi bi-people"></i> Staff</a></li>
-                                                <li class="nav-item"><a
-                                                        href="${pageContext.request.contextPath}/manager/reports.jsp"
-                                                        class="nav-link"><i class="bi bi-file-earmark-bar-graph"></i>
-                                                        Reports</a></li>
-                                                <li class="nav-item"><span class="nav-link"><i
-                                                            class="bi bi-person-circle"></i>
-                                                        <%= session.getAttribute("username") %>
-                                                    </span></li>
-                                                <li class="nav-item">
-                                                    <form action="${pageContext.request.contextPath}/auth" method="post"
-                                                        style="display: inline;">
-                                                        <input type="hidden" name="action" value="logout">
-                                                        <button type="submit" class="btn btn-primary ms-2">
-                                                            <i class="bi bi-box-arrow-right"></i> Logout
-                                                        </button>
-                                                    </form>
-                                                </li>
-                                            </ul>
+                                    </div>
+                                    <div class="sidebar-user">
+                                        <div class="sidebar-user-avatar"><i class="bi bi-person-fill"></i></div>
+                                        <div class="sidebar-user-info">
+                                            <span class="sidebar-user-name">
+                                                <%= session.getAttribute("username") %>
+                                            </span>
+                                            <span class="sidebar-user-role">Manager</span>
                                         </div>
                                     </div>
-                                </nav>
+                                    <div class="sidebar-nav-label">Navigation</div>
+                                    <ul class="sidebar-nav">
+                                        <li><a href="${pageContext.request.contextPath}/manager/dashboard.jsp"
+                                                class="sidebar-link active"><i class="bi bi-speedometer2"></i>
+                                                Dashboard</a></li>
+                                        <li class="sidebar-accordion-item">
+                                            <button type="button" class="sidebar-link sidebar-accordion-btn"
+                                                onclick="toggleBookingMenu()"><i class="bi bi-calendar-check"></i>
+                                                Bookings <i class="bi bi-chevron-down sidebar-chevron"
+                                                    id="bookingChevron"></i></button>
+                                            <ul class="sidebar-submenu" id="bookingSubmenu">
+                                                <li><a href="${pageContext.request.contextPath}/manager/bookings.jsp"
+                                                        class="sidebar-link sidebar-sublink"><i
+                                                            class="bi bi-list-ul"></i> All Bookings</a></li>
+                                                <li><a href="${pageContext.request.contextPath}/admin/add-booking.jsp"
+                                                        class="sidebar-link sidebar-sublink"><i
+                                                            class="bi bi-plus-circle"></i> Add Booking</a></li>
+                                            </ul>
+                                        </li>
+                                        <li><a href="${pageContext.request.contextPath}/manager/rooms.jsp"
+                                                class="sidebar-link"><i class="bi bi-door-open"></i> Rooms</a></li>
+                                        <li><a href="${pageContext.request.contextPath}/manager/staff.jsp"
+                                                class="sidebar-link"><i class="bi bi-people"></i> Staff &amp; Guests</a>
+                                        </li>
+                                        <li><a href="${pageContext.request.contextPath}/manager/reports.jsp"
+                                                class="sidebar-link"><i class="bi bi-bar-chart-line"></i> Reports</a>
+                                        </li>
+                                    </ul>
+                                    <div class="sidebar-footer">
+                                        <form action="${pageContext.request.contextPath}/auth" method="post"
+                                            style="margin:0;">
+                                            <input type="hidden" name="action" value="logout">
+                                            <button type="submit" class="sidebar-logout-btn"><i
+                                                    class="bi bi-box-arrow-left"></i> Logout</button>
+                                        </form>
+                                    </div>
+                                </aside>
+                                <div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+                                <main class="dashboard-main-content" id="mainContent">
+                                    <div class="container-fluid">
+                                        <h2 class="mb-4">Dashboard Overview</h2>
 
-                                <div style="display: flex;">
-                                    <!-- Sidebar -->
-                                    <aside class="dashboard-sidebar" style="width: 250px;">
-                                        <div
-                                            style="padding: 1.5rem; border-bottom: 1px solid #e5e7eb; text-align: center;">
-                                            <a href="${pageContext.request.contextPath}/index.jsp"
-                                                class="logo-container">
-                                                <img src="${pageContext.request.contextPath}/images/logo.png"
-                                                    alt="Ocean View Resort" class="logo-image sidebar">
-                                            </a>
-                                        </div>
-                                        <ul class="sidebar-nav">
-                                            <li><a href="${pageContext.request.contextPath}/manager/dashboard.jsp"
-                                                    class="sidebar-link active">
-                                                    <i class="bi bi-speedometer2"></i> Dashboard
-                                                </a></li>
-                                            <li><a href="${pageContext.request.contextPath}/manager/bookings.jsp"
-                                                    class="sidebar-link">
-                                                    <i class="bi bi-calendar-check"></i> Bookings
-                                                </a></li>
-                                            <li><a href="${pageContext.request.contextPath}/manager/rooms.jsp"
-                                                    class="sidebar-link">
-                                                    <i class="bi bi-door-open"></i> Rooms
-                                                </a></li>
-                                            <li><a href="${pageContext.request.contextPath}/manager/staff.jsp"
-                                                    class="sidebar-link">
-                                                    <i class="bi bi-people"></i> Staff & Guests
-                                                </a></li>
-                                            <li><a href="${pageContext.request.contextPath}/manager/reports.jsp"
-                                                    class="sidebar-link">
-                                                    <i class="bi bi-file-earmark-bar-graph"></i> Reports
-                                                </a></li>
-                                        </ul>
-                                    </aside>
-
-                                    <!-- Main Content -->
-                                    <main style="flex: 1; padding: 2rem;">
-                                        <h1 class="text-3xl font-bold mb-6">Manager Dashboard</h1>
-
-                                        <!-- Statistics Cards -->
-                                        <div class="grid grid-cols-4 gap-4 mb-8">
-                                            <div class="stats-card">
-                                                <div class="stats-icon"
-                                                    style="background-color: hsl(var(--ocean-blue));">
-                                                    <i class="bi bi-calendar-check"></i>
+                                        <!-- Stats Cards -->
+                                        <div class="grid grid-cols-4 mb-4">
+                                            <div class="card stat-card">
+                                                <div class="stat-value">
+                                                    <%= totalBookings %>
                                                 </div>
-                                                <div>
-                                                    <div class="stats-value">
-                                                        <%= totalBookings %>
-                                                    </div>
-                                                    <div class="stats-label">Total Bookings</div>
-                                                </div>
+                                                <div class="stat-label">Total Bookings</div>
                                             </div>
-
-                                            <div class="stats-card">
-                                                <div class="stats-icon" style="background-color: hsl(var(--success));">
-                                                    <i class="bi bi-door-open"></i>
+                                            <div class="card stat-card">
+                                                <div class="stat-value">
+                                                    <%= allRooms.size() %>
                                                 </div>
-                                                <div>
-                                                    <div class="stats-value">
-                                                        <%= availableRooms %>
-                                                    </div>
-                                                    <div class="stats-label">Available Rooms</div>
-                                                </div>
+                                                <div class="stat-label">Total Rooms</div>
                                             </div>
-
-                                            <div class="stats-card">
-                                                <div class="stats-icon" style="background-color: hsl(var(--warning));">
-                                                    <i class="bi bi-door-closed"></i>
+                                            <div class="card stat-card">
+                                                <div class="stat-value">
+                                                    <%= availableRooms %>
                                                 </div>
-                                                <div>
-                                                    <div class="stats-value">
-                                                        <%= occupiedRooms %>
-                                                    </div>
-                                                    <div class="stats-label">Occupied Rooms</div>
-                                                </div>
+                                                <div class="stat-label">Available Rooms</div>
                                             </div>
-
-                                            <div class="stats-card">
-                                                <div class="stats-icon" style="background-color: hsl(var(--primary));">
-                                                    <i class="bi bi-people"></i>
+                                            <div class="card stat-card">
+                                                <div class="stat-value">
+                                                    <%= allUsers.size() %>
                                                 </div>
-                                                <div>
-                                                    <div class="stats-value">
-                                                        <%= allUsers.size() %>
-                                                    </div>
-                                                    <div class="stats-label">Total Users</div>
-                                                </div>
+                                                <div class="stat-label">Total Users</div>
                                             </div>
                                         </div>
 
                                         <!-- Recent Bookings -->
                                         <div class="card">
                                             <div class="card-header">
-                                                <h3 class="card-title">Recent Bookings</h3>
+                                                <h4 class="card-title">Recent Bookings</h4>
                                             </div>
-                                            <div class="card-content">
-                                                <div class="table-responsive">
+                                            <div class="card-content p-0">
+                                                <div class="table-container">
                                                     <table class="table">
                                                         <thead>
                                                             <tr>
-                                                                <th>Booking ID</th>
-                                                                <th>Guest Name</th>
+                                                                <th>ID</th>
+                                                                <th>Customer</th>
                                                                 <th>Room</th>
-                                                                <th>Check-In</th>
-                                                                <th>Check-Out</th>
-                                                                <th>Status</th>
+                                                                <th>Check-in</th>
+                                                                <th>Check-out</th>
                                                                 <th>Amount</th>
+                                                                <th>Status</th>
+                                                                <th>Invoice</th>
                                                             </tr>
                                                         </thead>
                                                         <tbody>
-                                                            <% if (recentBookings !=null && !recentBookings.isEmpty()) {
-                                                                for (int i=0; i < Math.min(10, recentBookings.size());
-                                                                i++) { Booking booking=recentBookings.get(i); User
-                                                                user=userDAO.getUserById(booking.getUserId()); Room
-                                                                room=roomDAO.getRoomById(booking.getRoomId()); %>
+                                                            <% int count=0; for (Booking booking : recentBookings) { if
+                                                                (count++>= 10) break; %>
                                                                 <tr>
                                                                     <td>#<%= booking.getId() %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= user !=null ? user.getFullName() : "Unknown"
-                                                                            %>
+                                                                        <%= booking.getUserName() %>
                                                                     </td>
                                                                     <td>
-                                                                        <%= room !=null ? room.getRoomNumber() + " - " +
-                                                                            room.getRoomType() : "Unknown" %>
+                                                                        <%= booking.getRoomNumber() %> (<%=
+                                                                                booking.getRoomType() %>)
                                                                     </td>
                                                                     <td>
                                                                         <%= booking.getCheckInDate() %>
@@ -218,41 +153,97 @@
                                                                     <td>
                                                                         <%= booking.getCheckOutDate() %>
                                                                     </td>
-                                                                    <td>
-                                                                        <% String statusBadge="secondary" ; if
-                                                                            ("confirmed".equals(booking.getStatus())) {
-                                                                            statusBadge="success" ; } else if
-                                                                            ("pending".equals(booking.getStatus())) {
-                                                                            statusBadge="warning" ; } else if
-                                                                            ("cancelled".equals(booking.getStatus())) {
-                                                                            statusBadge="danger" ; } %>
-                                                                            <span
-                                                                                class="badge badge-<%= statusBadge %>">
-                                                                                <%= booking.getStatus().substring(0,
-                                                                                    1).toUpperCase() +
-                                                                                    booking.getStatus().substring(1) %>
-                                                                            </span>
+                                                                    <td>LKR <%= booking.getTotalAmount().doubleValue()
+                                                                            %>
                                                                     </td>
-                                                                    <td>LKR <%= String.format("%.2f",
-                                                                            booking.getTotalAmount().doubleValue()) %>
+                                                                    <td>
+                                                                        <% if ("confirmed".equals(booking.getStatus()))
+                                                                            { %>
+                                                                            <span
+                                                                                class="badge badge-success">Confirmed</span>
+                                                                            <% } else if
+                                                                                ("pending".equals(booking.getStatus()))
+                                                                                { %>
+                                                                                <span
+                                                                                    class="badge badge-warning">Pending</span>
+                                                                                <% } else if
+                                                                                    ("cancelled".equals(booking.getStatus()))
+                                                                                    { %>
+                                                                                    <span
+                                                                                        class="badge badge-danger">Cancelled</span>
+                                                                                    <% } else { %>
+                                                                                        <span
+                                                                                            class="badge badge-secondary">
+                                                                                            <%= booking.getStatus() %>
+                                                                                        </span>
+                                                                                        <% } %>
+                                                                    </td>
+                                                                    <td>
+                                                                        <a class="btn btn-outline"
+                                                                            style="padding: 0.25rem 0.75rem; font-size: 0.875rem;"
+                                                                            href="${pageContext.request.contextPath}/bookings?action=invoice&id=<%= booking.getId() %>">
+                                                                            Download
+                                                                        </a>
                                                                     </td>
                                                                 </tr>
-                                                                <% } } else { %>
-                                                                    <tr>
-                                                                        <td colspan="7" class="text-center">No bookings
-                                                                            found</td>
-                                                                    </tr>
-                                                                    <% } %>
+                                                                <% } %>
                                                         </tbody>
                                                     </table>
                                                 </div>
                                             </div>
+                                            <div class="card-footer">
+                                                <a href="${pageContext.request.contextPath}/manager/bookings.jsp"
+                                                    class="btn btn-primary">View All Bookings</a>
+                                            </div>
                                         </div>
-                                    </main>
-                                </div>
-
+                                    </div>
+                                </main>
                                 <script
                                     src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+                                <script>
+                                    function toggleBookingMenu() {
+                                        var sm = document.getElementById('bookingSubmenu');
+                                        var ch = document.getElementById('bookingChevron');
+                                        if (sm) { sm.classList.toggle('open'); ch.classList.toggle('open'); }
+                                    }
+                                    function toggleSidebar() {
+                                        var sidebar = document.getElementById('sidebar');
+                                        var mainContent = document.getElementById('mainContent');
+                                        var toggleBtn = document.getElementById('sidebarToggle');
+                                        var overlay = document.getElementById('sidebarOverlay');
+                                        var isMobile = window.innerWidth <= 992;
+                                        if (isMobile) {
+                                            sidebar.classList.toggle('open');
+                                            overlay.classList.toggle('active');
+                                            if (toggleBtn) toggleBtn.classList.toggle('shifted-open');
+                                        } else {
+                                            sidebar.classList.toggle('collapsed');
+                                            mainContent.classList.toggle('expanded');
+                                            if (toggleBtn) toggleBtn.classList.toggle('shifted');
+                                        }
+                                        if (toggleBtn) {
+                                            var icon = toggleBtn.querySelector('i');
+                                            if (sidebar.classList.contains('collapsed') || (!sidebar.classList.contains('open') && isMobile)) {
+                                                icon.className = 'bi bi-list';
+                                            } else {
+                                                icon.className = 'bi bi-x-lg';
+                                            }
+                                        }
+                                    }
+                                    window.addEventListener('resize', function () {
+                                        var sidebar = document.getElementById('sidebar');
+                                        var mainContent = document.getElementById('mainContent');
+                                        var toggleBtn = document.getElementById('sidebarToggle');
+                                        var overlay = document.getElementById('sidebarOverlay');
+                                        sidebar.classList.remove('collapsed', 'open');
+                                        mainContent.classList.remove('expanded');
+                                        if (toggleBtn) {
+                                            toggleBtn.classList.remove('shifted', 'shifted-open');
+                                            toggleBtn.querySelector('i').className = 'bi bi-list';
+                                        }
+                                        overlay.classList.remove('active');
+                                    });
+                                </script>
                             </body>
 
                             </html>
