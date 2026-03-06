@@ -15,12 +15,12 @@
         <!-- Navbar -->
         <nav class="navbar">
             <div class="navbar-container">
-                <a href="${pageContext.request.contextPath}/index.jsp" class="navbar-brand logo-container">
+                <a href="${pageContext.request.contextPath}/login.jsp" class="navbar-brand logo-container">
                     <img src="${pageContext.request.contextPath}/images/logo.png" alt="Ocean View Resort"
                         class="logo-image">
                 </a>
                 <ul class="navbar-nav">
-                    <li><a href="${pageContext.request.contextPath}/index.jsp" class="nav-link">Home</a></li>
+                    <li><a href="${pageContext.request.contextPath}/login.jsp" class="nav-link">Home</a></li>
                     <li><a href="${pageContext.request.contextPath}/login.jsp" class="btn btn-outline">Login</a></li>
                 </ul>
             </div>

@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
 <%@ page import="com.example.oceanviewresortnew.dao.*" %>
 <%@ page import="com.example.oceanviewresortnew.model.*" %>
 <%@ page import="java.util.*" %>
@@ -34,7 +34,7 @@ double occupancyRate = allRooms.size() > 0 ? (occupiedRooms * 100.0 / allRooms.s
 <body>
 <aside class="dashboard-sidebar" id="sidebar">
     <div class="sidebar-header">
-        <a href="${pageContext.request.contextPath}/index.jsp" class="logo-container">
+        <a href="${pageContext.request.contextPath}/login.jsp" class="logo-container">
             <img src="${pageContext.request.contextPath}/images/logo.png" alt="Ocean View Resort" class="logo-image sidebar">
         </a>
     </div>
@@ -70,40 +70,40 @@ double occupancyRate = allRooms.size() > 0 ? (occupiedRooms * 100.0 / allRooms.s
 <main class="dashboard-main-content" id="mainContent">
     <div class="container-fluid">
         <h2 style="margin-bottom:1.5rem;"><i class="bi bi-bar-chart-line" style="margin-right:.5rem;color:#1298c7;"></i>Business Reports &amp; Analytics</h2>
-        <div class="grid grid-cols-4 gap-4 mb-4">
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:hsl(var(--success));"><i class="bi bi-cash-stack"></i></div>
-                <div><div class="stats-value" style="font-size:1.1rem;">LKR <%= String.format("%.0f", totalRevenue) %></div><div class="stats-label">Total Revenue</div></div>
+        <div class="grid grid-cols-4 mb-4">
+            <div class="card stat-card">
+                <div class="stat-value" style="font-size:1.6rem;">LKR <%= String.format("%.0f", totalRevenue) %></div>
+                <div class="stat-label">Total Revenue</div>
             </div>
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:hsl(var(--ocean-blue));"><i class="bi bi-check-circle"></i></div>
-                <div><div class="stats-value"><%= confirmedBookings %></div><div class="stats-label">Confirmed Bookings</div></div>
+            <div class="card stat-card">
+                <div class="stat-value"><%= confirmedBookings %></div>
+                <div class="stat-label">Confirmed Bookings</div>
             </div>
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:hsl(var(--warning));"><i class="bi bi-percent"></i></div>
-                <div><div class="stats-value"><%= String.format("%.1f", occupancyRate) %>%</div><div class="stats-label">Occupancy Rate</div></div>
+            <div class="card stat-card">
+                <div class="stat-value"><%= String.format("%.1f", occupancyRate) %>%</div>
+                <div class="stat-label">Occupancy Rate</div>
             </div>
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:hsl(var(--danger));"><i class="bi bi-x-circle"></i></div>
-                <div><div class="stats-value"><%= cancelledBookings %></div><div class="stats-label">Cancellations</div></div>
+            <div class="card stat-card">
+                <div class="stat-value"><%= cancelledBookings %></div>
+                <div class="stat-label">Cancellations</div>
             </div>
         </div>
-        <div class="grid grid-cols-4 gap-4 mb-4">
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:#6c757d;"><i class="bi bi-building"></i></div>
-                <div><div class="stats-value"><%= allRooms.size() %></div><div class="stats-label">Total Rooms</div></div>
+        <div class="grid grid-cols-4 mb-4">
+            <div class="card stat-card">
+                <div class="stat-value"><%= allRooms.size() %></div>
+                <div class="stat-label">Total Rooms</div>
             </div>
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:hsl(var(--success));"><i class="bi bi-door-open"></i></div>
-                <div><div class="stats-value"><%= availableRooms %></div><div class="stats-label">Available Rooms</div></div>
+            <div class="card stat-card">
+                <div class="stat-value"><%= availableRooms %></div>
+                <div class="stat-label">Available Rooms</div>
             </div>
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:hsl(var(--warning));"><i class="bi bi-door-closed"></i></div>
-                <div><div class="stats-value"><%= occupiedRooms %></div><div class="stats-label">Occupied Rooms</div></div>
+            <div class="card stat-card">
+                <div class="stat-value"><%= occupiedRooms %></div>
+                <div class="stat-label">Occupied Rooms</div>
             </div>
-            <div class="stats-card">
-                <div class="stats-icon" style="background-color:hsl(var(--ocean-blue));"><i class="bi bi-calendar3"></i></div>
-                <div><div class="stats-value"><%= allBookings.size() %></div><div class="stats-label">Total Bookings</div></div>
+            <div class="card stat-card">
+                <div class="stat-value"><%= allBookings.size() %></div>
+                <div class="stat-label">Total Bookings</div>
             </div>
         </div>
         <div class="card">

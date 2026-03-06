@@ -300,7 +300,7 @@
                     <!-- Sidebar -->
                     <aside class="dashboard-sidebar" id="sidebar">
                         <div class="sidebar-header">
-                            <a href="${pageContext.request.contextPath}/index.jsp" class="logo-container">
+                            <a href="${pageContext.request.contextPath}/login.jsp" class="logo-container">
                                 <img src="${pageContext.request.contextPath}/images/logo.png" alt="Ocean View Resort"
                                     class="logo-image sidebar">
                             </a>
@@ -388,12 +388,6 @@
                                     <ul class="sidebar-nav">
                                         <li><a href="${pageContext.request.contextPath}/receptionist/dashboard.jsp"
                                                 class="sidebar-link"><i class="bi bi-speedometer2"></i> Dashboard</a>
-                                        </li>
-                                        <li><a href="${pageContext.request.contextPath}/receptionist/check-in.jsp"
-                                                class="sidebar-link"><i class="bi bi-box-arrow-in-right"></i>
-                                                Check-In</a></li>
-                                        <li><a href="${pageContext.request.contextPath}/receptionist/check-out.jsp"
-                                                class="sidebar-link"><i class="bi bi-box-arrow-left"></i> Check-Out</a>
                                         </li>
                                         <li><a href="${pageContext.request.contextPath}/receptionist/rooms.jsp"
                                                 class="sidebar-link"><i class="bi bi-door-open"></i> Room Status</a>

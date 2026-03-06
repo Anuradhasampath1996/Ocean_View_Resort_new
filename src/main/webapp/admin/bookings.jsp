@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ page import="com.example.oceanviewresortnew.dao.*" %>
         <%@ page import="com.example.oceanviewresortnew.model.*" %>
             <%@ page import="java.util.*" %>
@@ -62,7 +62,7 @@
                                 <!-- Sidebar -->
                                 <aside class="dashboard-sidebar" id="sidebar">
                                     <div class="sidebar-header">
-                                        <a href="${pageContext.request.contextPath}/index.jsp" class="logo-container">
+                                        <a href="${pageContext.request.contextPath}/login.jsp" class="logo-container">
                                             <img src="${pageContext.request.contextPath}/images/logo.png"
                                                 alt="Ocean View Resort" class="logo-image sidebar">
                                         </a>

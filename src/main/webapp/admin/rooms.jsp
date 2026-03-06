@@ -29,7 +29,7 @@
                             <!-- Sidebar -->
                             <aside class="dashboard-sidebar" id="sidebar">
                                 <div class="sidebar-header">
-                                    <a href="${pageContext.request.contextPath}/index.jsp" class="logo-container">
+                                    <a href="${pageContext.request.contextPath}/login.jsp" class="logo-container">
                                         <img src="${pageContext.request.contextPath}/images/logo.png"
                                             alt="Ocean View Resort" class="logo-image sidebar">
                                     </a>

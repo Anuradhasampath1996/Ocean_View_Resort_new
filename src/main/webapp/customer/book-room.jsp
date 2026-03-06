@@ -1,4 +1,4 @@
-﻿<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
+<%@ page contentType="text/html; charset=UTF-8" pageEncoding="UTF-8" %>
     <%@ page import="com.example.oceanviewresortnew.dao.*" %>
         <%@ page import="com.example.oceanviewresortnew.model.*" %>
             <%@ page import="java.util.*" %>
@@ -22,7 +22,7 @@
 <div id="wrapper">
 <!-- Sidebar -->
 <ul class="navbar-nav bg-gradient-primary sidebar sidebar-dark accordion" id="accordionSidebar">
-    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/index.jsp">
+    <a class="sidebar-brand d-flex align-items-center justify-content-center" href="${pageContext.request.contextPath}/login.jsp">
         <div class="sidebar-brand-icon">
             <img src="${pageContext.request.contextPath}/images/logo.png" alt="Ocean View Resort" style="height:40px;">
         </div>
