@@ -8,20 +8,15 @@ import jakarta.mail.internet.MimeMessage;
 import java.util.Properties;
 
 /**
- * Email utility for sending booking-related emails via Gmail SMTP.
- * <p>
- * IMPORTANT: You must use a Gmail App Password (not your regular password).
- * To generate one: Google Account > Security > 2-Step Verification > App
- * passwords.
- * </p>
+ * Email utility for sending booking-related emails via SMTP.
  */
 public class EmailService {
 
     // ── SMTP Configuration ─────────────────────────────────────────
-    private static final String SMTP_HOST = "smtp.gmail.com";
-    private static final int SMTP_PORT = 587;
-    private static final String SENDER_EMAIL = "anuradhasampath64@gmail.com";
-    private static final String SENDER_PASSWORD = "YOUR_APP_PASSWORD_HERE"; // Replace with Gmail App Password
+    private static final String SMTP_HOST = "mail.jurislocator.ca";
+    private static final int SMTP_PORT = 465;
+    private static final String SENDER_EMAIL = "noreply@jurislocator.ca";
+    private static final String SENDER_PASSWORD = "GyZ.6x-j}Ekp_bm=";
 
     private EmailService() {
     }
@@ -42,9 +37,10 @@ public class EmailService {
             try {
                 Properties props = new Properties();
                 props.put("mail.smtp.auth", "true");
-                props.put("mail.smtp.starttls.enable", "true");
+                props.put("mail.smtp.ssl.enable", "true");
                 props.put("mail.smtp.host", SMTP_HOST);
                 props.put("mail.smtp.port", String.valueOf(SMTP_PORT));
+                props.put("mail.smtp.ssl.trust", SMTP_HOST);
 
                 Session session = Session.getInstance(props, new Authenticator() {
                     @Override
