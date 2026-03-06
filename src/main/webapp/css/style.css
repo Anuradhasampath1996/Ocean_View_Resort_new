@@ -207,6 +207,7 @@ h6 {
 
 .card-header {
     padding: 1.5rem;
+    background-color: var(--card) !important;
     border-bottom: 1px solid var(--border);
 }
 
@@ -661,6 +662,47 @@ h6 {
     .hero p {
         font-size: 1.125rem;
     }
+}
+
+/* Stats Cards */
+.stats-card {
+    background: #ffffff;
+    border-radius: var(--radius);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    padding: 1.25rem 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    transition: box-shadow 0.2s;
+}
+
+.stats-card:hover {
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.13);
+}
+
+.stats-icon {
+    width: 52px;
+    height: 52px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    font-size: 1.5rem;
+    color: #fff;
+}
+
+.stats-value {
+    font-size: 1.75rem;
+    font-weight: 700;
+    color: var(--secondary-foreground);
+    line-height: 1.1;
+}
+
+.stats-label {
+    font-size: 0.82rem;
+    color: var(--muted-foreground);
+    margin-top: 0.15rem;
 }
 
 /* Room Card */
